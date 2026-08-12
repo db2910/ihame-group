@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><script src="./image-slot.js"></script><style>body{margin:0;background:#EFEDE8;font-family:'IBM Plex Sans',Helvetica,sans-serif}a{color:#2875B4}a:hover{color:#1c5b8f}</style></helmet>
+
+<div style="padding:44px 48px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:600 10px 'IBM Plex Mono',monospace;background:#1A1A1A;color:#fff;padding:3px 7px;border-radius:4px">1a</span><span style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">IHAME Logistics &amp; Supply — Operations direction, built out</span></div>
+<p style="max-width:780px;margin:0 0 12px;font:13px/1.6 'IBM Plex Sans';color:rgba(0,0,0,.6);text-wrap:pretty">Real logo in place. The login now carries a photograph on the left — drop your own shot (a container yard, a truck at the depot, the shop counter) onto the placeholder and it sticks. Both screens are clickable: <b style="color:#1A1A1A">Sign in</b> opens the manager dashboard, the avatar signs back out; the phone does the same into bulk status update.</p>
+
+<div style="display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap">
+
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="font:400 11px 'IBM Plex Sans';color:rgba(0,0,0,.5)">Desktop · 1360 × 860</div>
+<div style="width:1360px;height:860px;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;position:relative">
+
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;height:860px">
+<div style="width:600px;position:relative;background:#1A1A1A">
+<image-slot id="login-photo" shape="rect" fit="cover" placeholder="Drop a photo — depot, container yard or shop counter"></image-slot>
+<div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(26,26,26,.52) 0%,rgba(26,26,26,.18) 40%,rgba(26,26,26,.80) 100%)"></div>
+<div style="position:absolute;inset:0;pointer-events:none;padding:44px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;color:#fff">
+<img src="./assets/ihame-logo.png" alt="IHAME Logistics &amp; Supply" style="width:230px;height:auto;display:block">
+<div>
+<div style="font:600 40px/1.14 'IBM Plex Sans';letter-spacing:-.02em;max-width:430px;text-wrap:pretty">Freight and shop, one ledger.</div>
+<div style="margin-top:14px;font:400 14px/1.6 'IBM Plex Sans';color:rgba(255,255,255,.62);max-width:390px">China → Kigali · Goma · Bukavu. Orders, payments, stock and sales in a single record.</div>
+<div style="margin-top:26px;display:flex;align-items:center;gap:10px"><div style="width:34px;height:2px;background:#7AB648"></div><span style="font:400 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.55)">YOUR TRUST, OUR MISSION</span></div>
+</div>
+</div>
+</div>
+<div style="flex:1;background:#F7F8F9;display:flex;align-items:center;justify-content:center">
+<div style="width:388px;background:#fff;border:1px solid #E4E7EA;border-radius:6px;padding:36px 34px;box-shadow:0 8px 28px rgba(26,26,26,.07)">
+<div style="font:600 22px/1.2 'IBM Plex Sans';color:#1A1A1A">Sign in</div>
+<div style="margin-top:6px;font:400 13px/1.5 'IBM Plex Sans';color:#6B7178">Use your work email address.</div>
+<div style="display:flex;flex-direction:column;gap:16px;margin-top:26px">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#6B7178">Email</label><input value="jmk@ihame.rw" readonly style="height:44px;border:1px solid #D5DADE;border-radius:4px;padding:0 12px;font:400 14px 'IBM Plex Sans';color:#1A1A1A;background:#fff;outline:none;box-sizing:border-box"></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';letter-spacing:.04em;text-transform:uppercase;color:#6B7178">Password</label><div style="height:44px;border:1.5px solid #2875B4;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:400 14px 'IBM Plex Sans';color:#1A1A1A;box-shadow:0 0 0 3px rgba(40,117,180,.12)"><span style="letter-spacing:.18em">••••••••••</span><span style="font:500 11.5px 'IBM Plex Sans';color:#2875B4;cursor:pointer">Show</span></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div style="width:15px;height:15px;border:1px solid #D5DADE;border-radius:3px"></div><span style="font:400 12.5px 'IBM Plex Sans';color:#4A5057">Keep me signed in</span></div><span style="font:500 12.5px 'IBM Plex Sans';color:#2875B4;cursor:pointer">Forgot password</span></div>
+<div onClick="{{ signIn }}" style="height:46px;background:#2875B4;border-radius:4px;display:flex;align-items:center;justify-content:center;font:600 14px 'IBM Plex Sans';color:#fff;cursor:pointer;user-select:none" style-hover="background:#1F5F94">Sign in</div>
+</div>
+<div style="margin-top:22px;padding-top:16px;border-top:1px solid #EDEFF1;font:400 11.5px/1.5 'IBM Plex Sans';color:#8A9098">Accounts are created by the manager. Contact them if you are locked out.</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDash }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;height:860px;background:#F7F8F9">
+<div style="width:216px;background:#1A1A1A;color:#fff;padding:20px 0;box-sizing:border-box;display:flex;flex-direction:column">
+<div style="padding:2px 20px 22px;display:flex;align-items:center;gap:12px"><img src="./assets/ihame-mark.png" alt="IHAME Logistics &amp; Supply" style="width:58px;height:auto;display:block"><div style="font:600 11px/1.4 'IBM Plex Sans';letter-spacing:.1em;color:rgba(255,255,255,.7)">IHAME<br>LOGISTICS</div></div>
+<div style="padding:0 20px 8px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.34)">OVERVIEW</div>
+<div style="display:flex;align-items:center;gap:10px;padding:9px 20px;background:rgba(255,255,255,.09);border-left:3px solid #7AB648;font:500 13.5px 'IBM Plex Sans'">Dashboard</div>
+<div style="padding:18px 20px 8px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.34)">FREIGHT</div>
+<div style="display:flex;flex-direction:column;gap:2px;font:400 13.5px 'IBM Plex Sans';color:rgba(255,255,255,.72)">
+<div style="padding:8px 20px;display:flex;justify-content:space-between">All orders<span style="font:500 11px 'IBM Plex Mono';background:#2875B4;color:#fff;padding:1px 6px;border-radius:9px">7</span></div>
+<div style="padding:8px 20px">Bulk status update</div><div style="padding:8px 20px">Customers</div></div>
+<div style="padding:18px 20px 8px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.34)">SHOP</div>
+<div style="display:flex;flex-direction:column;gap:2px;font:400 13.5px 'IBM Plex Sans';color:rgba(255,255,255,.72)">
+<div style="padding:8px 20px">Items</div><div style="padding:8px 20px">Purchases</div><div style="padding:8px 20px">Stock movements</div><div style="padding:8px 20px;display:flex;justify-content:space-between">Low stock<span style="font:500 11px 'IBM Plex Mono';background:#C2410C;color:#fff;padding:1px 6px;border-radius:9px">6</span></div><div style="padding:8px 20px">Adjustments</div></div>
+<div style="padding:18px 20px 8px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.34)">ADMIN</div>
+<div style="display:flex;flex-direction:column;gap:2px;font:400 13.5px 'IBM Plex Sans';color:rgba(255,255,255,.72)"><div style="padding:8px 20px">Reports</div><div style="padding:8px 20px">Users</div><div style="padding:8px 20px">Audit log</div></div>
+<div onClick="{{ signOut }}" style="margin-top:auto;padding:16px 20px 0;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;cursor:pointer"><div style="width:28px;height:28px;border-radius:50%;background:#2875B4;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans'">JK</div><div><div style="font:500 12.5px/1.2 'IBM Plex Sans'">J. Karangwa</div><div style="font:400 11px/1.3 'IBM Plex Sans';color:rgba(255,255,255,.45)">Manager · sign out</div></div></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+<div style="height:60px;background:#fff;border-bottom:1px solid #E4E7EA;display:flex;align-items:center;justify-content:space-between;padding:0 26px">
+<div><div style="font:600 16px/1.2 'IBM Plex Sans';color:#1A1A1A">Dashboard</div><div style="font:400 11.5px/1.4 'IBM Plex Sans';color:#8A9098">Saturday, 1 August 2026</div></div>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;border:1px solid #D5DADE;border-radius:4px;overflow:hidden;font:500 12px 'IBM Plex Mono',monospace">
+<sc-for list="{{ currencies }}" as="c" hint-placeholder-count="3">
+<div onClick="{{ c.pick }}" style="padding:6px 12px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.code }}</div>
+</sc-for>
+</div>
+<div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:400 13px 'IBM Plex Sans';color:#4A5057">Last 30 days</div>
+<div style="height:34px;padding:0 14px;background:#1A1A1A;border-radius:4px;display:flex;align-items:center;font:500 13px 'IBM Plex Sans';color:#fff;cursor:pointer">Export</div>
+</div>
+</div>
+<div style="flex:1;padding:22px 26px;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #2875B4;border-radius:5px;padding:18px 20px"><div style="font:500 11.5px/1 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Orders awaiting review</div><div style="font:600 40px/1.1 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:10px">7</div><div style="font:400 12.5px/1.4 'IBM Plex Sans';color:#8A9098;margin-top:4px">2 submitted today · oldest 4 days</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #2875B4;border-radius:5px;padding:18px 20px"><div style="font:500 11.5px/1 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Outstanding balances</div><div style="font:600 40px/1.1 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:10px">{{ outstanding }}</div><div style="font:400 12.5px/1.4 'IBM Plex Sans';color:#8A9098;margin-top:4px">across 23 orders · 4 overdue</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #C2410C;border-radius:5px;padding:18px 20px"><div style="font:500 11.5px/1 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Low stock alerts</div><div style="font:600 40px/1.1 'IBM Plex Mono',monospace;color:#C2410C;margin-top:10px">6</div><div style="font:400 12.5px/1.4 'IBM Plex Sans';color:#8A9098;margin-top:4px">2 items already at zero</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1.55fr 1fr;gap:16px;flex:1;min-height:0">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:14px 18px;border-bottom:1px solid #EDEFF1;display:flex;align-items:center;justify-content:space-between"><div style="font:600 13.5px 'IBM Plex Sans';color:#1A1A1A">Awaiting your review</div><div style="font:500 12px 'IBM Plex Sans';color:#2875B4;cursor:pointer">Bulk status update →</div></div>
+<div style="display:grid;grid-template-columns:26px 1.05fr 1.25fr .85fr .8fr .9fr;padding:9px 18px;background:#FAFBFC;border-bottom:1px solid #EDEFF1;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8A9098"><div></div><div>ORDER</div><div>CUSTOMER</div><div>DEST</div><div>STAFF</div><div style="text-align:right">BALANCE</div></div>
+<sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="6">
+<div onClick="{{ r.toggle }}" style="display:grid;grid-template-columns:26px 1.05fr 1.25fr .85fr .8fr .9fr;padding:11px 18px;border-bottom:1px solid #F2F4F5;align-items:center;font:400 13px 'IBM Plex Sans';color:#1A1A1A;cursor:pointer" style-hover="background:#FAFBFC">
+<div style="width:15px;height:15px;border:1px solid {{ r.tickBorder }};border-radius:3px;background:{{ r.tickBg }}"></div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ r.no }}</div>
+<div>{{ r.customer }}</div><div style="color:#4A5057">{{ r.dest }}</div><div style="color:#4A5057">{{ r.staff }}</div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ r.balance }}</div>
+</div>
+</sc-for>
+<div style="margin-top:auto;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;font:400 12.5px 'IBM Plex Sans';color:#8A9098;border-top:1px solid #F2F4F5"><span>Showing 6 of 7</span><span style="color:#2875B4;font-weight:500">{{ selectedLabel }}</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:16px 18px">
+<div style="font:600 13.5px 'IBM Plex Sans';color:#1A1A1A">Arrivals · next 14 days</div>
+<div style="display:flex;flex-direction:column;gap:11px;margin-top:13px">
+<sc-for list="{{ arrivals }}" as="a" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:11px"><div style="width:46px;font:500 11px 'IBM Plex Mono',monospace;color:#2875B4">{{ a.day }}</div><div style="flex:1"><div style="font:400 13px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ a.what }}</div><div style="font:400 11.5px/1.3 'IBM Plex Sans';color:#8A9098">{{ a.where }}</div></div></div>
+</sc-for>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:16px 18px;flex:1">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font:600 13.5px 'IBM Plex Sans';color:#1A1A1A">Today's shop sales</div><div style="font:600 15px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ shopToday }}</div></div>
+<div style="display:flex;align-items:flex-end;gap:5px;height:74px;margin-top:14px">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="10"><div style="flex:1;background:#7AB648;border-radius:1px;height:{{ b.h }}"></div></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 10.5px 'IBM Plex Mono',monospace;color:#8A9098;margin-top:6px"><span>08:00</span><span>18:00</span></div>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid #EDEFF1;display:flex;align-items:center;gap:9px"><div style="width:7px;height:7px;border-radius:50%;background:#C2410C"></div><div style="font:400 12.5px 'IBM Plex Sans';color:#4A5057">2 under-price sales flagged today</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="font:400 11px 'IBM Plex Sans';color:rgba(0,0,0,.5)">Phone · 390 × 844</div>
+<div style="width:390px;height:844px;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:26px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;position:relative">
+
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+<div style="height:844px;display:flex;flex-direction:column;background:#1A1A1A;position:relative">
+<div style="position:absolute;top:0;left:0;right:0;height:252px"><image-slot id="login-photo-mobile" shape="rect" fit="cover" placeholder="Drop a photo"></image-slot></div>
+<div style="position:absolute;top:0;left:0;right:0;height:252px;pointer-events:none;background:linear-gradient(180deg,rgba(26,26,26,.55),rgba(26,26,26,.88))"></div>
+<div style="position:relative;padding:54px 26px 0;pointer-events:none"><img src="./assets/ihame-logo.png" alt="IHAME Logistics &amp; Supply" style="width:204px;height:auto;display:block"></div>
+<div style="position:relative;padding:24px 26px 28px;color:#fff;pointer-events:none"><div style="font:600 26px/1.16 'IBM Plex Sans';letter-spacing:-.02em">Freight and shop,<br>one ledger.</div></div>
+<div style="position:relative;flex:1;background:#fff;border-radius:18px 18px 0 0;padding:30px 26px">
+<div style="font:600 20px/1.2 'IBM Plex Sans';color:#1A1A1A">Sign in</div>
+<div style="display:flex;flex-direction:column;gap:15px;margin-top:22px">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11px/1 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Email</label><div style="height:50px;border:1px solid #D5DADE;border-radius:5px;display:flex;align-items:center;padding:0 13px;font:400 15px 'IBM Plex Sans';color:#1A1A1A">jmk@ihame.rw</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11px/1 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Password</label><div style="height:50px;border:1.5px solid #2875B4;border-radius:5px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;font:400 15px 'IBM Plex Sans';color:#1A1A1A;box-shadow:0 0 0 3px rgba(40,117,180,.12)"><span style="letter-spacing:.18em">••••••••</span><span style="font:500 12px 'IBM Plex Sans';color:#2875B4">Show</span></div></div>
+<div onClick="{{ signIn }}" style="height:52px;background:#2875B4;border-radius:5px;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans';color:#fff;cursor:pointer;user-select:none">Sign in</div>
+<div style="text-align:center;font:500 13px 'IBM Plex Sans';color:#2875B4">Forgot password</div>
+</div>
+<div style="margin-top:22px;padding:12px 14px;background:#F7F8F9;border-radius:5px;font:400 12px/1.5 'IBM Plex Sans';color:#6B7178">Offline. Sales made now are queued and sync when the connection returns.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDash }}" hint-placeholder-val="{{ false }}">
+<div style="height:844px;background:#F7F8F9;display:flex;flex-direction:column">
+<div style="background:#1A1A1A;color:#fff;padding:44px 20px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><img src="./assets/ihame-mark.png" alt="IHAME Logistics &amp; Supply" style="width:52px;height:auto;display:block"><div onClick="{{ signOut }}" style="width:30px;height:30px;border-radius:50%;background:#2875B4;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans';cursor:pointer">JK</div></div>
+<div style="font:600 21px/1.2 'IBM Plex Sans';margin-top:18px">Bulk status update</div>
+<div style="font:400 12.5px 'IBM Plex Sans';color:rgba(255,255,255,.5);margin-top:3px">7 orders submitted · tick and set</div>
+</div>
+<div style="display:flex;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid #E4E7EA;font:500 12.5px 'IBM Plex Sans'"><div style="padding:7px 13px;background:#2875B4;color:#fff;border-radius:15px">Submitted</div><div style="padding:7px 13px;color:#6B7178;border:1px solid #D5DADE;border-radius:15px">In transit</div><div style="padding:7px 13px;color:#6B7178;border:1px solid #D5DADE;border-radius:15px">Arrived</div></div>
+<div style="flex:1;overflow:hidden">
+<sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="6">
+<div onClick="{{ r.toggle }}" style="display:flex;align-items:center;gap:13px;padding:16px;background:#fff;border-bottom:1px solid #EDEFF1;cursor:pointer">
+<div style="width:22px;height:22px;border:1.5px solid {{ r.tickBorderMobile }};border-radius:4px;flex:none;background:{{ r.tickBg }}"></div>
+<div style="flex:1"><div style="font:500 14px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ r.customer }}</div><div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:#8A9098;margin-top:2px">{{ r.no }} · {{ r.dest }}</div></div>
+<div style="font:500 13px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ r.balance }}</div>
+</div>
+</sc-for>
+</div>
+<div style="background:#fff;border-top:1px solid #E4E7EA;padding:14px 16px 24px;display:flex;flex-direction:column;gap:10px">
+<div style="font:400 12.5px 'IBM Plex Sans';color:#6B7178">{{ selectedLabel }} — set all to</div>
+<div style="display:flex;gap:9px"><div style="flex:1;height:50px;background:#7AB648;border-radius:5px;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans';color:#fff">Arrived</div><div style="width:110px;height:50px;border:1px solid #D5DADE;border-radius:5px;display:flex;align-items:center;justify-content:center;font:500 14px 'IBM Plex Sans';color:#4A5057">More…</div></div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</div>
+</div>
+
+
+<div style="padding:10px 48px 44px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:600 10px 'IBM Plex Mono',monospace;background:#1A1A1A;color:#fff;padding:3px 7px;border-radius:4px">1a</span><span style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">Freight staff — my orders · new order · order detail</span><span style="font:400 11.5px 'IBM Plex Sans';color:rgba(0,0,0,.5)">top-bar chrome, no sidebar — staff see only their module. Tabs are clickable.</span></div>
+<div style="width:1360px;height:860px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:58px;background:#1A1A1A;color:#fff;display:flex;align-items:center;padding:0 24px;gap:28px;flex:none">
+<div style="display:flex;align-items:center;gap:11px"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:44px;height:auto;display:block"><span style="font:600 12px/1 'IBM Plex Sans';letter-spacing:.14em">IHAME</span></div>
+<div style="display:flex;gap:4px;height:58px;align-items:stretch;font:500 13.5px 'IBM Plex Sans'">
+<sc-for list="{{ staffTabs }}" as="t" hint-placeholder-count="3">
+<div onClick="{{ t.go }}" style="display:flex;align-items:center;padding:0 16px;cursor:pointer;color:{{ t.fg }};box-shadow:{{ t.bar }}">{{ t.label }}</div>
+</sc-for>
+</div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:12px"><div style="font:400 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.4)">FREIGHT STAFF</div><div style="width:30px;height:30px;border-radius:50%;background:#7AB648;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans';color:#1A1A1A">AU</div></div>
+</div>
+
+<sc-if value="{{ showMyOrders }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;padding:24px 28px;display:flex;flex-direction:column;gap:16px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div><div style="font:600 19px/1.2 'IBM Plex Sans';color:#1A1A1A">My orders</div><div style="font:400 12px/1.5 'IBM Plex Sans';color:#8A9098">Orders you created · drafts are only visible to you</div></div>
+<div onClick="{{ goNewOrder }}" style="height:38px;padding:0 18px;background:#2875B4;border-radius:4px;display:flex;align-items:center;font:600 13.5px 'IBM Plex Sans';color:#fff;cursor:pointer">+ New order</div>
+</div>
+<div style="display:flex;gap:8px;font:500 12.5px 'IBM Plex Sans'">
+<sc-for list="{{ statusChips }}" as="ch" hint-placeholder-count="6">
+<div onClick="{{ ch.pick }}" style="padding:7px 14px;border-radius:16px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.fg }};border:1px solid {{ ch.border }}">{{ ch.label }}</div>
+</sc-for>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;flex:1;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:grid;grid-template-columns:1.05fr 1.3fr 1.5fr .8fr .9fr .9fr .95fr;padding:10px 18px;background:#FAFBFC;border-bottom:1px solid #EDEFF1;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8A9098"><div>ORDER</div><div>CUSTOMER</div><div>GOODS</div><div>DEST</div><div>ETA</div><div>STATUS</div><div style="text-align:right">BALANCE</div></div>
+<sc-for list="{{ myOrders }}" as="o" hint-placeholder-count="7">
+<div onClick="{{ goDetail }}" style="display:grid;grid-template-columns:1.05fr 1.3fr 1.5fr .8fr .9fr .9fr .95fr;padding:12px 18px;border-bottom:1px solid #F2F4F5;align-items:center;font:400 13px 'IBM Plex Sans';color:#1A1A1A;cursor:pointer" style-hover="background:#FAFBFC">
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ o.no }}</div>
+<div>{{ o.customer }}</div><div style="color:#4A5057">{{ o.goods }}</div><div style="color:#4A5057">{{ o.dest }}</div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A5057">{{ o.eta }}</div>
+<div><span style="font:500 11px 'IBM Plex Sans';padding:3px 9px;border-radius:11px;background:{{ o.pillBg }};color:{{ o.pillFg }}">{{ o.status }}</span></div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px">{{ o.balance }}</div>
+</div>
+</sc-for>
+<div style="margin-top:auto;padding:11px 18px;font:400 12.5px 'IBM Plex Sans';color:#8A9098;border-top:1px solid #F2F4F5">{{ orderCount }}</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showNewOrder }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:hidden;display:flex;justify-content:center;padding:24px 0">
+<div style="width:820px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><div style="font:600 19px/1.2 'IBM Plex Sans';color:#1A1A1A">New order</div><div style="font:400 12px 'IBM Plex Mono',monospace;color:#8A9098">ORD-2026-0088 · DRAFT</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#2875B4">1 · Customer</div>
+<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Search customer</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:400 14px 'IBM Plex Sans';color:#1A1A1A">Nshuti Motors — KGL-0412<span style="color:#8A9098">▾</span></div></div>
+<div style="height:42px;padding:0 16px;border:1px solid #2875B4;border-radius:4px;display:flex;align-items:center;font:500 13px 'IBM Plex Sans';color:#2875B4;cursor:pointer">+ Add new</div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#2875B4">2 · Goods</div>
+<div style="display:flex;border:1px solid #D5DADE;border-radius:4px;overflow:hidden;font:500 12px 'IBM Plex Sans'">
+<sc-for list="{{ goodsCats }}" as="g" hint-placeholder-count="4"><div onClick="{{ g.pick }}" style="padding:7px 13px;cursor:pointer;background:{{ g.bg }};color:{{ g.fg }}">{{ g.label }}</div></sc-for>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Description</label><div style="height:60px;border:1px solid #D5DADE;border-radius:4px;padding:10px 12px;font:400 14px/1.5 'IBM Plex Sans';color:#1A1A1A;box-sizing:border-box">{{ goodsDesc }}</div></div>
+<sc-if value="{{ isVehicle }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Make</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 14px 'IBM Plex Sans'">Toyota</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Model</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 14px 'IBM Plex Sans'">Hiace</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Year</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 14px 'IBM Plex Sans'">2019</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Colour</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 14px 'IBM Plex Sans'">White</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">VIN / chassis</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace">JTFHS02P8A0091734</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Engine no</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace">2TR-8845102</div></div>
+</div>
+</sc-if>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#2875B4">3 · Shipping</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Origin port</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 14px 'IBM Plex Sans'">Guangzhou</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Destination</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:400 14px 'IBM Plex Sans'">Kigali<span style="color:#8A9098">▾</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Departure</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace">2026-08-09</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">ETA</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace">2026-09-24</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Container no <span style="text-transform:none;color:#B4BAC0">· optional</span></label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace;color:#8A9098">—</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Bill of lading <span style="text-transform:none;color:#B4BAC0">· optional</span></label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:400 13px 'IBM Plex Mono',monospace;color:#8A9098">—</div></div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="font:600 12px 'IBM Plex Sans';letter-spacing:.06em;text-transform:uppercase;color:#2875B4">4 · Price</div>
+<div style="display:grid;grid-template-columns:140px 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Currency</label><div style="height:42px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:400 14px 'IBM Plex Sans'">USD<span style="color:#8A9098">▾</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="font:500 11.5px/1 'IBM Plex Sans';text-transform:uppercase;letter-spacing:.04em;color:#6B7178">Agreed total</label><div style="height:42px;border:1.5px solid #2875B4;border-radius:4px;display:flex;align-items:center;padding:0 12px;font:500 15px 'IBM Plex Mono',monospace;box-shadow:0 0 0 3px rgba(40,117,180,.12)">14,800.00</div></div>
+</div>
+<div style="font:400 12px/1.5 'IBM Plex Sans';color:#8A9098">Payments are recorded on the order after it is saved. Balance is always computed, never stored.</div>
+</div>
+<div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:8px">
+<div onClick="{{ goMyOrders }}" style="height:44px;padding:0 20px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:500 13.5px 'IBM Plex Sans';color:#4A5057;cursor:pointer;background:#fff">Save draft</div>
+<div onClick="{{ goDetail }}" style="height:44px;padding:0 24px;background:#2875B4;border-radius:4px;display:flex;align-items:center;font:600 13.5px 'IBM Plex Sans';color:#fff;cursor:pointer">Submit for review</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:hidden;display:flex;justify-content:center;padding:24px 0">
+<div style="width:960px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:14px"><div onClick="{{ goMyOrders }}" style="font:500 13px 'IBM Plex Sans';color:#2875B4;cursor:pointer">← My orders</div><div style="font:600 19px 'IBM Plex Sans';color:#1A1A1A">ORD-2026-0087</div><span style="font:500 11px 'IBM Plex Sans';padding:3px 10px;border-radius:11px;background:rgba(40,117,180,.12);color:#2875B4">Submitted</span></div>
+<div style="background:#FEF6ED;border:1px solid #F0D9BE;border-radius:5px;padding:11px 16px;display:flex;align-items:center;gap:10px"><div style="width:7px;height:7px;border-radius:50%;background:#C2410C"></div><div style="font:400 12.5px 'IBM Plex Sans';color:#7A4A21">Submitted on 28 Jul — fields are locked. Only the manager can edit or change status. You can still record payments.</div></div>
+<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:14px;flex:1;min-height:0">
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:18px 22px">
+<div style="font:600 13px 'IBM Plex Sans';color:#1A1A1A;margin-bottom:14px">Order</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px 24px">
+<sc-for list="{{ detailFields }}" as="f" hint-placeholder-count="10">
+<div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #F2F4F5;padding-bottom:9px"><span style="font:400 12px 'IBM Plex Sans';color:#8A9098">{{ f.k }}</span><span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#1A1A1A;text-align:right">{{ f.v }}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:18px 22px;flex:1">
+<div style="font:600 13px 'IBM Plex Sans';color:#1A1A1A;margin-bottom:12px">Status history</div>
+<sc-for list="{{ history }}" as="h" hint-placeholder-count="2">
+<div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid #F2F4F5;font:400 12.5px 'IBM Plex Sans';color:#4A5057"><span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A9098;width:78px">{{ h.at }}</span><span style="flex:1">{{ h.what }}</span><span style="color:#8A9098">{{ h.by }}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="background:#1A1A1A;border-radius:5px;padding:18px 22px;color:#fff">
+<div style="display:flex;justify-content:space-between;font:400 12px 'IBM Plex Sans';color:rgba(255,255,255,.55)"><span>Agreed total</span><span>Paid</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><span style="font:600 22px 'IBM Plex Mono',monospace">$14,800</span><span style="font:500 15px 'IBM Plex Mono',monospace;color:#7AB648">$2,400</span></div>
+<div style="height:6px;background:rgba(255,255,255,.14);border-radius:3px;margin-top:12px;overflow:hidden"><div style="width:16%;height:6px;background:#7AB648"></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font:400 12px 'IBM Plex Sans';color:rgba(255,255,255,.55)"><span>Balance</span><span style="font:600 14px 'IBM Plex Mono',monospace;color:#fff">$12,400</span></div>
+</div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:18px 22px;flex:1;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">Payments</div></div>
+<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F2F4F5">
+<div style="width:44px;height:44px;border-radius:4px;background:repeating-linear-gradient(135deg,#EEF0F2 0 4px,#F7F8F9 4px 8px);border:1px solid #E4E7EA;display:flex;align-items:center;justify-content:center;font:400 8px 'IBM Plex Mono',monospace;color:#8A9098;text-align:center">proof img</div>
+<div style="flex:1"><div style="font:500 13px 'IBM Plex Sans';color:#1A1A1A">$2,400 · MoMo</div><div style="font:400 11.5px 'IBM Plex Sans';color:#8A9098;margin-top:2px">Deposit · 28 Jul 2026 · A. Uwase</div></div>
+</div>
+<div style="margin-top:auto;height:44px;border:1.5px dashed #2875B4;border-radius:4px;display:flex;align-items:center;justify-content:center;font:600 13px 'IBM Plex Sans';color:#2875B4;cursor:pointer;margin-top:14px">+ Record a payment</div>
+<div style="font:400 11px/1.5 'IBM Plex Sans';color:#8A9098;margin-top:8px">Proof of payment image is required. Compressed to under 500 KB on upload.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div style="padding:10px 48px 44px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:600 10px 'IBM Plex Mono',monospace;background:#1A1A1A;color:#fff;padding:3px 7px;border-radius:4px">1a</span><span style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">Shop staff — sale screen (POS)</span><span style="font:400 11.5px 'IBM Plex Sans';color:rgba(0,0,0,.5)">tap items to add · qty, payment method and proof are live · works offline with a queue</span></div>
+<div style="width:1360px;height:860px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex;flex-direction:column">
+<div style="height:58px;background:#1A1A1A;color:#fff;display:flex;align-items:center;padding:0 24px;gap:28px;flex:none">
+<div style="display:flex;align-items:center;gap:11px"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:44px;height:auto;display:block"><span style="font:600 12px/1 'IBM Plex Sans';letter-spacing:.14em">IHAME</span></div>
+<div style="display:flex;gap:4px;height:58px;align-items:stretch;font:500 13.5px 'IBM Plex Sans'">
+<div style="display:flex;align-items:center;padding:0 16px;color:#fff;box-shadow:inset 0 -3px 0 #7AB648">Sale</div>
+<div style="display:flex;align-items:center;padding:0 16px;color:rgba(255,255,255,.6);cursor:pointer">Today's sales</div>
+<div style="display:flex;align-items:center;padding:0 16px;color:rgba(255,255,255,.6);cursor:pointer">Stock lookup</div>
+</div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+<div style="display:flex;align-items:center;gap:7px;padding:5px 11px;border-radius:14px;background:rgba(122,182,72,.16);border:1px solid rgba(122,182,72,.4)"><div style="width:7px;height:7px;border-radius:50%;background:#7AB648"></div><span style="font:500 11px 'IBM Plex Mono',monospace;color:#A9D57F">ONLINE · QUEUE 0</span></div>
+<div style="width:30px;height:30px;border-radius:50%;background:#2875B4;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans'">CN</div>
+</div>
+</div>
+<div style="flex:1;display:flex;min-height:0">
+<div style="flex:1;padding:20px 22px;display:flex;flex-direction:column;gap:14px;min-width:0">
+<div style="height:46px;background:#fff;border:1px solid #D5DADE;border-radius:5px;display:flex;align-items:center;gap:10px;padding:0 14px"><span style="color:#8A9098;font-size:15px">⌕</span><span style="font:400 14px 'IBM Plex Sans';color:#8A9098">Search item, SKU or scan barcode…</span></div>
+<div style="display:flex;gap:8px;font:500 12px 'IBM Plex Sans'"><span style="padding:6px 13px;border-radius:15px;background:#1A1A1A;color:#fff">All</span><span style="padding:6px 13px;border-radius:15px;border:1px solid #D5DADE;color:#6B7178">Cement &amp; agg.</span><span style="padding:6px 13px;border-radius:15px;border:1px solid #D5DADE;color:#6B7178">Steel</span><span style="padding:6px 13px;border-radius:15px;border:1px solid #D5DADE;color:#6B7178">Paint</span><span style="padding:6px 13px;border-radius:15px;border:1px solid #D5DADE;color:#6B7178">Tools</span><span style="padding:6px 13px;border-radius:15px;border:1px solid #D5DADE;color:#6B7178">Plumbing</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:start;flex:1;overflow:hidden">
+<sc-for list="{{ posItems }}" as="it" hint-placeholder-count="8">
+<div onClick="{{ it.add }}" style="background:#fff;border:1px solid {{ it.border }};border-radius:6px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:8px;user-select:none" style-hover="border-color:#2875B4">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><span style="font:500 10.5px 'IBM Plex Mono',monospace;color:#8A9098">{{ it.sku }}</span><span style="font:500 10.5px 'IBM Plex Mono',monospace;color:{{ it.stockFg }}">{{ it.stock }}</span></div>
+<div style="font:500 13.5px/1.3 'IBM Plex Sans';color:#1A1A1A;min-height:35px">{{ it.name }}</div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:600 14px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ it.price }}</span><span style="font:400 11px 'IBM Plex Sans';color:#8A9098">/{{ it.unit }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="width:404px;background:#fff;border-left:1px solid #E4E7EA;display:flex;flex-direction:column">
+<div style="padding:16px 20px;border-bottom:1px solid #EDEFF1;display:flex;justify-content:space-between;align-items:baseline"><div style="font:600 15px 'IBM Plex Sans';color:#1A1A1A">Sale SAL-2026-1043</div><div style="font:400 11.5px 'IBM Plex Sans';color:#8A9098">walk-in</div></div>
+<div style="flex:1;overflow:hidden;padding:6px 0">
+<sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="padding:40px 20px;text-align:center;font:400 13px/1.6 'IBM Plex Sans';color:#8A9098">Cart is empty.<br>Tap an item to add it.</div>
+</sc-if>
+<sc-for list="{{ cartRows }}" as="c" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid #F2F4F5">
+<div style="flex:1"><div style="font:500 13px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ c.name }}</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#8A9098;margin-top:2px">{{ c.price }} × {{ c.qty }}</div></div>
+<div style="display:flex;align-items:center;gap:8px">
+<div onClick="{{ c.dec }}" style="width:26px;height:26px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;justify-content:center;font:500 14px 'IBM Plex Sans';color:#4A5057;cursor:pointer;user-select:none">−</div>
+<div style="width:22px;text-align:center;font:600 13px 'IBM Plex Mono',monospace">{{ c.qty }}</div>
+<div onClick="{{ c.inc }}" style="width:26px;height:26px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;justify-content:center;font:500 14px 'IBM Plex Sans';color:#4A5057;cursor:pointer;user-select:none">+</div>
+</div>
+<div style="width:82px;text-align:right;font:600 12.5px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ c.total }}</div>
+</div>
+</sc-for>
+</div>
+<div style="border-top:1px solid #EDEFF1;padding:14px 20px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between;font:400 13px 'IBM Plex Sans';color:#4A5057"><span>Subtotal</span><span style="font-family:'IBM Plex Mono',monospace">{{ subtotal }}</span></div>
+<div style="display:flex;justify-content:space-between;font:400 13px 'IBM Plex Sans';color:#4A5057"><span>Discount</span><span style="font-family:'IBM Plex Mono',monospace;color:#8A9098">RWF 0</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:8px;border-top:1px solid #EDEFF1"><span style="font:600 14px 'IBM Plex Sans';color:#1A1A1A">Total</span><span style="font:600 20px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ total }}</span></div>
+<div style="display:flex;gap:7px;margin-top:4px">
+<sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="4">
+<div onClick="{{ m.pick }}" style="flex:1;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font:500 12.5px 'IBM Plex Sans';cursor:pointer;user-select:none;border:1px solid {{ m.border }};background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</div>
+</sc-for>
+</div>
+<sc-if value="{{ needsProof }}" hint-placeholder-val="{{ false }}">
+<div style="height:44px;border:1.5px dashed #C3C9CE;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:8px;font:400 12.5px 'IBM Plex Sans';color:#6B7178;cursor:pointer">📎 Attach proof of payment <span style="color:#C2410C">· required</span></div>
+</sc-if>
+<div style="height:50px;background:#7AB648;border-radius:5px;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans';color:#fff;cursor:pointer;margin-top:2px">Complete sale · {{ total }}</div>
+<div style="font:400 11px/1.5 'IBM Plex Sans';color:#8A9098">Stock is deducted in the same transaction. A sale that would drive stock below zero is rejected.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="padding:10px 48px 44px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:600 10px 'IBM Plex Mono',monospace;background:#1A1A1A;color:#fff;padding:3px 7px;border-radius:4px">1a</span><span style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">Manager admin — items · reports · users · audit log</span><span style="font:400 11.5px 'IBM Plex Sans';color:rgba(0,0,0,.5)">sidebar items are clickable</span></div>
+<div style="width:1360px;height:860px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex">
+<div style="width:216px;background:#1A1A1A;color:#fff;padding:20px 0;box-sizing:border-box;display:flex;flex-direction:column;flex:none">
+<div style="padding:2px 20px 22px;display:flex;align-items:center;gap:12px"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:58px;height:auto;display:block"><div style="font:600 11px/1.4 'IBM Plex Sans';letter-spacing:.1em;color:rgba(255,255,255,.7)">IHAME<br>LOGISTICS</div></div>
+<sc-for list="{{ adminGroups }}" as="grp" hint-placeholder-count="4">
+<div style="padding:14px 20px 7px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.34)">{{ grp.title }}</div>
+<sc-for list="{{ grp.items }}" as="n" hint-placeholder-count="3">
+<div onClick="{{ n.go }}" style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px;cursor:pointer;font:500 13.5px 'IBM Plex Sans';color:{{ n.fg }};background:{{ n.bg }};border-left:3px solid {{ n.bar }}"><span>{{ n.label }}</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:{{ n.hintFg }};background:{{ n.hintBg }};padding:1px 6px;border-radius:9px">{{ n.hint }}</span></div>
+</sc-for>
+</sc-for>
+<div style="margin-top:auto;padding:16px 20px 0;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:#2875B4;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans'">JK</div><div><div style="font:500 12.5px/1.2 'IBM Plex Sans'">J. Karangwa</div><div style="font:400 11px/1.3 'IBM Plex Sans';color:rgba(255,255,255,.45)">Manager</div></div></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+
+<sc-if value="{{ showItems }}" hint-placeholder-val="{{ true }}">
+<div style="height:60px;background:#fff;border-bottom:1px solid #E4E7EA;display:flex;align-items:center;justify-content:space-between;padding:0 26px;flex:none">
+<div><div style="font:600 16px/1.2 'IBM Plex Sans';color:#1A1A1A">Items</div><div style="font:400 11.5px/1.4 'IBM Plex Sans';color:#8A9098">1,847 items · 6 below reorder level</div></div>
+<div style="display:flex;gap:10px"><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;gap:8px;font:400 13px 'IBM Plex Sans';color:#8A9098;background:#fff;width:220px">⌕ Search SKU or name…</div><div style="height:34px;padding:0 14px;background:#2875B4;border-radius:4px;display:flex;align-items:center;font:500 13px 'IBM Plex Sans';color:#fff;cursor:pointer">+ Add item</div></div>
+</div>
+<div style="flex:1;padding:20px 26px;min-height:0">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;height:100%;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box">
+<div style="display:grid;grid-template-columns:.9fr 1.7fr 1fr .6fr .8fr .8fr .8fr .8fr;padding:10px 18px;background:#FAFBFC;border-bottom:1px solid #EDEFF1;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8A9098"><div>SKU</div><div>ITEM</div><div>CATEGORY</div><div>UNIT</div><div style="text-align:right">COST</div><div style="text-align:right">SELL</div><div style="text-align:right">ON HAND</div><div style="text-align:right">REORDER</div></div>
+<sc-for list="{{ itemRows }}" as="i" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:.9fr 1.7fr 1fr .6fr .8fr .8fr .8fr .8fr;padding:12px 18px;border-bottom:1px solid #F2F4F5;align-items:center;font:400 13px 'IBM Plex Sans';color:#1A1A1A" style-hover="background:#FAFBFC">
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A5057">{{ i.sku }}</div><div>{{ i.name }}</div><div style="color:#4A5057">{{ i.cat }}</div><div style="color:#4A5057">{{ i.unit }}</div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A5057">{{ i.cost }}</div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px">{{ i.sell }}</div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;color:{{ i.stockFg }}">{{ i.stock }}</div>
+<div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8A9098">{{ i.reorder }}</div>
+</div>
+</sc-for>
+<div style="margin-top:auto;padding:11px 18px;font:400 12.5px 'IBM Plex Sans';color:#8A9098;border-top:1px solid #F2F4F5">Cost price is a weighted average, recalculated on every purchase. Stock on hand is the sum of the movements ledger.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showReports }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;background:#fff;border-bottom:1px solid #E4E7EA;display:flex;align-items:center;justify-content:space-between;padding:0 26px;flex:none">
+<div><div style="font:600 16px/1.2 'IBM Plex Sans';color:#1A1A1A">Reports</div><div style="font:400 11.5px/1.4 'IBM Plex Sans';color:#8A9098">July 2026 · base currency USD (freight) / RWF (shop)</div></div>
+<div style="display:flex;gap:10px"><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:400 13px 'IBM Plex Sans';color:#4A5057">July 2026 ▾</div><div style="height:34px;padding:0 14px;background:#1A1A1A;border-radius:4px;display:flex;align-items:center;gap:8px;font:500 13px 'IBM Plex Sans';color:#fff;cursor:pointer">Export Excel</div><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:500 13px 'IBM Plex Sans';color:#4A5057;cursor:pointer;background:#fff">PDF</div></div>
+</div>
+<div style="flex:1;padding:20px 26px;display:flex;flex-direction:column;gap:16px;min-height:0;overflow:hidden">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #2875B4;border-radius:5px;padding:16px 18px"><div style="font:500 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Freight revenue</div><div style="font:600 26px 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:8px">$412,300</div><div style="font:400 12px 'IBM Plex Sans';color:#7AB648;margin-top:3px">▲ 12% vs June</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #7AB648;border-radius:5px;padding:16px 18px"><div style="font:500 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Shop revenue</div><div style="font:600 26px 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:8px">RWF 14.2M</div><div style="font:400 12px 'IBM Plex Sans';color:#7AB648;margin-top:3px">▲ 5% vs June</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #1A1A1A;border-radius:5px;padding:16px 18px"><div style="font:500 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Total cash in</div><div style="font:600 26px 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:8px">$96,410</div><div style="font:400 12px 'IBM Plex Sans';color:#8A9098;margin-top:3px">converted at rate per payment</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #C2410C;border-radius:5px;padding:16px 18px"><div style="font:500 11px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Receivables</div><div style="font:600 26px 'IBM Plex Mono',monospace;color:#C2410C;margin-top:8px">$184,250</div><div style="font:400 12px 'IBM Plex Sans';color:#8A9098;margin-top:3px">23 orders outstanding</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1;min-height:0">
+<sc-for list="{{ reportGroups }}" as="grp" hint-placeholder-count="3">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;padding:16px 18px;display:flex;flex-direction:column;gap:2px">
+<div style="font:600 13.5px 'IBM Plex Sans';color:#1A1A1A;padding-bottom:10px;border-bottom:1px solid #EDEFF1;margin-bottom:6px">{{ grp.title }}</div>
+<sc-for list="{{ grp.rows }}" as="rep" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #F5F6F8;cursor:pointer" style-hover="background:#FAFBFC">
+<div><div style="font:400 13px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ rep.name }}</div><div style="font:400 11px/1.4 'IBM Plex Sans';color:#8A9098">{{ rep.desc }}</div></div>
+<span style="font:500 11px 'IBM Plex Mono',monospace;color:#2875B4">OPEN →</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showUsers }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;background:#fff;border-bottom:1px solid #E4E7EA;display:flex;align-items:center;justify-content:space-between;padding:0 26px;flex:none">
+<div><div style="font:600 16px/1.2 'IBM Plex Sans';color:#1A1A1A">Users</div><div style="font:400 11.5px/1.4 'IBM Plex Sans';color:#8A9098">Six accounts · three hardcoded roles, no permissions editor</div></div>
+<div style="height:34px;padding:0 14px;background:#2875B4;border-radius:4px;display:flex;align-items:center;font:500 13px 'IBM Plex Sans';color:#fff;cursor:pointer">+ Add user</div>
+</div>
+<div style="flex:1;padding:20px 26px;min-height:0">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:grid;grid-template-columns:1.4fr 1.6fr 1fr .9fr .9fr 1fr;padding:10px 18px;background:#FAFBFC;border-bottom:1px solid #EDEFF1;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8A9098"><div>NAME</div><div>EMAIL</div><div>ROLE</div><div>STATUS</div><div>LAST ACTIVE</div><div style="text-align:right">ACTIONS</div></div>
+<sc-for list="{{ userRows }}" as="u" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:1.4fr 1.6fr 1fr .9fr .9fr 1fr;padding:13px 18px;border-bottom:1px solid #F2F4F5;align-items:center;font:400 13px 'IBM Plex Sans';color:#1A1A1A">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:{{ u.avatarBg }};display:flex;align-items:center;justify-content:center;font:600 10.5px 'IBM Plex Sans';color:#fff">{{ u.initials }}</div>{{ u.name }}</div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A5057">{{ u.email }}</div>
+<div><span style="font:500 11px 'IBM Plex Sans';padding:3px 9px;border-radius:11px;background:{{ u.roleBg }};color:{{ u.roleFg }}">{{ u.role }}</span></div>
+<div style="display:flex;align-items:center;gap:7px"><div style="width:7px;height:7px;border-radius:50%;background:{{ u.dot }}"></div><span style="font:400 12.5px 'IBM Plex Sans';color:#4A5057">{{ u.status }}</span></div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8A9098">{{ u.last }}</div>
+<div style="display:flex;gap:14px;justify-content:flex-end;font:500 12px 'IBM Plex Sans'"><span style="color:#2875B4;cursor:pointer">Reset password</span><span style="color:{{ u.toggleFg }};cursor:pointer">{{ u.toggleLabel }}</span></div>
+</div>
+</sc-for>
+<div style="padding:11px 18px;font:400 12.5px 'IBM Plex Sans';color:#8A9098">Deactivated accounts keep their history — orders, sales and audit rows are never deleted.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAudit }}" hint-placeholder-val="{{ false }}">
+<div style="height:60px;background:#fff;border-bottom:1px solid #E4E7EA;display:flex;align-items:center;justify-content:space-between;padding:0 26px;flex:none">
+<div><div style="font:600 16px/1.2 'IBM Plex Sans';color:#1A1A1A">Audit log</div><div style="font:400 11.5px/1.4 'IBM Plex Sans';color:#8A9098">Every field change after submit, every void, every adjustment</div></div>
+<div style="display:flex;gap:10px"><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:400 13px 'IBM Plex Sans';color:#4A5057">All tables ▾</div><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:400 13px 'IBM Plex Sans';color:#4A5057">All users ▾</div><div style="height:34px;padding:0 14px;border:1px solid #D5DADE;border-radius:4px;display:flex;align-items:center;font:400 13px 'IBM Plex Sans';color:#4A5057">Last 7 days ▾</div></div>
+</div>
+<div style="flex:1;padding:20px 26px;min-height:0">
+<div style="background:#fff;border:1px solid #E4E7EA;border-radius:5px;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr .9fr 1.2fr 1.3fr 1.3fr;padding:10px 18px;background:#FAFBFC;border-bottom:1px solid #EDEFF1;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8A9098"><div>WHEN</div><div>BY</div><div>RECORD · FIELD</div><div>OLD</div><div>NEW</div></div>
+<sc-for list="{{ auditRows }}" as="a" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:1fr .9fr 1.2fr 1.3fr 1.3fr;padding:12px 18px;border-bottom:1px solid #F2F4F5;align-items:center;font:400 12.5px 'IBM Plex Sans';color:#1A1A1A">
+<div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#4A5057">{{ a.at }}</div>
+<div>{{ a.by }}</div>
+<div><div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#2875B4">{{ a.record }}</div><div style="font:400 11px 'IBM Plex Sans';color:#8A9098">{{ a.field }}</div></div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A9098;text-decoration:line-through">{{ a.old }}</div>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#1A1A1A">{{ a.new }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+
+<div style="padding:10px 48px 60px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:12px"><span style="font:600 10px 'IBM Plex Mono',monospace;background:#1A1A1A;color:#fff;padding:3px 7px;border-radius:4px">1a</span><span style="font:600 13px 'IBM Plex Sans';color:#1A1A1A">More mobile — manager dashboard · freight my orders · shop stock lookup</span></div>
+<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+
+<div style="display:flex;flex-direction:column;gap:9px"><div style="font:400 11px 'IBM Plex Sans';color:rgba(0,0,0,.5)">Manager dashboard</div>
+<div style="width:390px;height:844px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:26px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex;flex-direction:column">
+<div style="background:#1A1A1A;color:#fff;padding:44px 20px 18px">
+<div style="display:flex;align-items:center;justify-content:space-between"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:52px;height:auto;display:block"><div style="width:30px;height:30px;border-radius:50%;background:#2875B4;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans'">JK</div></div>
+<div style="font:600 21px/1.2 'IBM Plex Sans';margin-top:18px">Dashboard</div>
+<div style="font:400 12.5px 'IBM Plex Sans';color:rgba(255,255,255,.5);margin-top:3px">Saturday, 1 August 2026</div>
+</div>
+<div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #2875B4;border-radius:5px;padding:13px 15px"><div style="font:500 10.5px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Awaiting review</div><div style="font:600 28px 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:6px">7</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #C2410C;border-radius:5px;padding:13px 15px"><div style="font:500 10.5px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Low stock</div><div style="font:600 28px 'IBM Plex Mono',monospace;color:#C2410C;margin-top:6px">6</div></div>
+<div style="background:#fff;border:1px solid #E4E7EA;border-top:3px solid #2875B4;border-radius:5px;padding:13px 15px;grid-column:span 2"><div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font:500 10.5px 'IBM Plex Sans';letter-spacing:.05em;text-transform:uppercase;color:#6B7178">Outstanding balances</div><div style="font:400 11px 'IBM Plex Sans';color:#8A9098">23 orders</div></div><div style="font:600 28px 'IBM Plex Mono',monospace;color:#1A1A1A;margin-top:6px">$184,250</div></div>
+</div>
+<div style="flex:1;background:#fff;border-top:1px solid #E4E7EA;overflow:hidden">
+<div style="padding:13px 16px;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #EDEFF1"><span style="font:600 13.5px 'IBM Plex Sans';color:#1A1A1A">Awaiting your review</span><span style="font:500 11.5px 'IBM Plex Sans';color:#2875B4">Bulk update →</span></div>
+<sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #F2F4F5">
+<div style="flex:1"><div style="font:500 13.5px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ r.customer }}</div><div style="font:400 11px/1.4 'IBM Plex Mono',monospace;color:#8A9098;margin-top:2px">{{ r.no }} · {{ r.dest }}</div></div>
+<div style="font:500 12.5px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ r.balance }}</div>
+</div>
+</sc-for>
+</div>
+<div style="background:#fff;border-top:1px solid #E4E7EA;padding:10px 12px 22px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;font:500 10.5px 'IBM Plex Sans'">
+<div style="color:#2875B4;padding:6px 0">Dashboard</div><div style="color:#8A9098;padding:6px 0">Orders</div><div style="color:#8A9098;padding:6px 0">Stock</div><div style="color:#8A9098;padding:6px 0">Reports</div>
+</div>
+</div></div>
+
+<div style="display:flex;flex-direction:column;gap:9px"><div style="font:400 11px 'IBM Plex Sans';color:rgba(0,0,0,.5)">Freight staff · my orders</div>
+<div style="width:390px;height:844px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:26px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex;flex-direction:column">
+<div style="background:#1A1A1A;color:#fff;padding:44px 20px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:52px;height:auto;display:block"><div style="width:30px;height:30px;border-radius:50%;background:#7AB648;display:flex;align-items:center;justify-content:center;font:600 11px 'IBM Plex Sans';color:#1A1A1A">AU</div></div>
+<div style="font:600 21px/1.2 'IBM Plex Sans';margin-top:18px">My orders</div>
+</div>
+<div style="display:flex;gap:8px;padding:12px 16px;background:#fff;border-bottom:1px solid #E4E7EA;font:500 12px 'IBM Plex Sans';overflow:hidden"><div style="padding:6px 12px;background:#2875B4;color:#fff;border-radius:14px">All</div><div style="padding:6px 12px;color:#6B7178;border:1px solid #D5DADE;border-radius:14px">Draft</div><div style="padding:6px 12px;color:#6B7178;border:1px solid #D5DADE;border-radius:14px">Submitted</div><div style="padding:6px 12px;color:#6B7178;border:1px solid #D5DADE;border-radius:14px">In transit</div></div>
+<div style="flex:1;overflow:hidden">
+<sc-for list="{{ myOrdersMobile }}" as="o" hint-placeholder-count="6">
+<div style="padding:14px 16px;background:#fff;border-bottom:1px solid #EDEFF1">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#1A1A1A">{{ o.no }}</span><span style="font:500 10.5px 'IBM Plex Sans';padding:3px 9px;border-radius:11px;background:{{ o.pillBg }};color:{{ o.pillFg }}">{{ o.status }}</span></div>
+<div style="font:500 14px/1.3 'IBM Plex Sans';color:#1A1A1A;margin-top:6px">{{ o.goods }}</div>
+<div style="display:flex;justify-content:space-between;margin-top:4px;font:400 11.5px 'IBM Plex Sans';color:#8A9098"><span>{{ o.customer }} · {{ o.dest }}</span><span style="font-family:'IBM Plex Mono',monospace">{{ o.balance }}</span></div>
+</div>
+</sc-for>
+</div>
+<div style="padding:14px 16px 24px;background:#fff;border-top:1px solid #E4E7EA"><div style="height:50px;background:#2875B4;border-radius:5px;display:flex;align-items:center;justify-content:center;font:600 15px 'IBM Plex Sans';color:#fff">+ New order</div></div>
+</div></div>
+
+<div style="display:flex;flex-direction:column;gap:9px"><div style="font:400 11px 'IBM Plex Sans';color:rgba(0,0,0,.5)">Shop staff · stock lookup</div>
+<div style="width:390px;height:844px;background:#F7F8F9;border:1px solid rgba(0,0,0,.1);border-radius:26px;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden;display:flex;flex-direction:column">
+<div style="background:#1A1A1A;color:#fff;padding:44px 20px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><img src="./assets/ihame-mark.png" alt="IHAME" style="width:52px;height:auto;display:block"><div style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;background:rgba(122,182,72,.16);border:1px solid rgba(122,182,72,.4)"><div style="width:6px;height:6px;border-radius:50%;background:#7AB648"></div><span style="font:500 10px 'IBM Plex Mono',monospace;color:#A9D57F">ONLINE</span></div></div>
+<div style="font:600 21px/1.2 'IBM Plex Sans';margin-top:18px">Stock lookup</div>
+<div style="font:400 12.5px 'IBM Plex Sans';color:rgba(255,255,255,.5);margin-top:3px">Read-only · quantities from the ledger</div>
+</div>
+<div style="padding:14px 16px;background:#fff;border-bottom:1px solid #E4E7EA"><div style="height:46px;border:1px solid #D5DADE;border-radius:5px;display:flex;align-items:center;gap:10px;padding:0 13px;font:400 14px 'IBM Plex Sans';color:#8A9098">⌕ Search item, SKU or scan…</div></div>
+<div style="flex:1;overflow:hidden">
+<sc-for list="{{ stockLookupRows }}" as="s" hint-placeholder-count="8">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-bottom:1px solid #EDEFF1">
+<div style="flex:1"><div style="font:500 14px/1.3 'IBM Plex Sans';color:#1A1A1A">{{ s.name }}</div><div style="font:400 11px/1.4 'IBM Plex Mono',monospace;color:#8A9098;margin-top:2px">{{ s.sku }} · {{ s.price }}</div></div>
+<div style="text-align:right"><div style="font:600 16px 'IBM Plex Mono',monospace;color:{{ s.stockFg }}">{{ s.stock }}</div><div style="font:400 10.5px 'IBM Plex Sans';color:#8A9098">{{ s.unit }}</div></div>
+</div>
+</sc-for>
+</div>
+</div></div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { screen: 'login', currency: 'USD', selected: { 'ORD-2026-0087': true, 'ORD-2026-0086': true, 'ORD-2026-0085': true },
+    staffScreen: 'orders', statusFilter: 'All', goodsCat: 'Vehicle', cart: { 'CEM-050': 4, 'PNT-20L': 1 }, payMethod: 'MoMo', adminScreen: 'items' };
+
+  renderVals() {
+    const cur = this.state.currency;
+    const rate = { USD: 1, RWF: 1300, CDF: 2800 }[cur];
+    const sym = { USD: '$', RWF: 'RWF ', CDF: 'CDF ' }[cur];
+    const money = usd => {
+      const v = usd * rate;
+      return sym + Math.round(v).toLocaleString('en-US');
+    };
+    const base = [
+      { no: 'ORD-2026-0087', customer: 'Nshuti Motors', dest: 'Kigali', staff: 'A. Uwase', usd: 12400 },
+      { no: 'ORD-2026-0086', customer: 'Kivu Hardware', dest: 'Bukavu', staff: 'A. Uwase', usd: 3150 },
+      { no: 'ORD-2026-0085', customer: 'B. Mugisha', dest: 'Goma', staff: 'E. Habimana', usd: 28900 },
+      { no: 'ORD-2026-0084', customer: 'Rwanda Agri Ltd', dest: 'Kigali', staff: 'E. Habimana', usd: 0 },
+      { no: 'ORD-2026-0083', customer: 'Virunga Traders', dest: 'Goma', staff: 'A. Uwase', usd: 7600 },
+      { no: 'ORD-2026-0082', customer: 'C. Niyonzima', dest: 'Kigali', staff: 'E. Habimana', usd: 1980 }
+    ];
+    const reviewRows = base.map(r => {
+      const on = !!this.state.selected[r.no];
+      return {
+        ...r,
+        balance: money(r.usd),
+        tickBg: on ? '#2875B4' : 'transparent',
+        tickBorder: on ? '#2875B4' : '#D5DADE',
+        tickBorderMobile: on ? '#2875B4' : '#C3C9CE',
+        toggle: () => this.setState(s => ({ selected: { ...s.selected, [r.no]: !s.selected[r.no] } }))
+      };
+    });
+    const count = Object.values(this.state.selected).filter(Boolean).length;
+    const currencies = ['USD', 'RWF', 'CDF'].map(code => ({
+      code,
+      bg: code === cur ? '#2875B4' : 'transparent',
+      fg: code === cur ? '#fff' : '#6B7178',
+      pick: () => this.setState({ currency: code })
+    }));
+    const arrivals = [
+      { day: 'AUG 04', what: 'Toyota Hiace 2019 · ORD-0071', where: 'Kigali · MSKU 442819' },
+      { day: 'AUG 07', what: 'Generator set 40kVA · ORD-0075', where: 'Goma · TGHU 118203' },
+      { day: 'AUG 11', what: 'Electronics, 3 pallets · ORD-0079', where: 'Bukavu · CMAU 907711' },
+      { day: 'AUG 13', what: 'Hino FM 2017 · ORD-0080', where: 'Kigali · MSKU 553907' }
+    ];
+    const bars = [22, 38, 30, 54, 47, 68, 41, 74, 58, 33].map(h => ({ h: h + '%' }));
+    // --- freight staff ---
+    const ss = this.state.staffScreen;
+    const staffTabs = [
+      { label: 'My orders', key: 'orders' }, { label: 'New order', key: 'new' }, { label: 'Customers', key: 'customers' }
+    ].map(t => ({
+      label: t.label,
+      fg: (ss === t.key || (ss === 'detail' && t.key === 'orders')) ? '#fff' : 'rgba(255,255,255,.6)',
+      bar: (ss === t.key || (ss === 'detail' && t.key === 'orders')) ? 'inset 0 -3px 0 #7AB648' : 'none',
+      go: () => this.setState({ staffScreen: t.key === 'customers' ? 'orders' : t.key })
+    }));
+    const pill = {
+      Draft: ['#EEF0F2', '#6B7178'], Submitted: ['rgba(40,117,180,.12)', '#2875B4'],
+      'In transit': ['#FDF0E0', '#B45309'], Arrived: ['rgba(122,182,72,.16)', '#4C7A24'], Delivered: ['#E7F0E0', '#3D6B1F']
+    };
+    const allOrders = [
+      { no: 'ORD-2026-0088', customer: 'Nshuti Motors', goods: 'Toyota Hiace 2019', dest: 'Kigali', eta: '—', status: 'Draft', usd: 14800 },
+      { no: 'ORD-2026-0087', customer: 'Nshuti Motors', goods: 'Toyota Land Cruiser 2016', dest: 'Kigali', eta: 'SEP 18', status: 'Submitted', usd: 12400 },
+      { no: 'ORD-2026-0086', customer: 'Kivu Hardware', goods: 'Power tools, 14 boxes', dest: 'Bukavu', eta: 'SEP 10', status: 'Submitted', usd: 3150 },
+      { no: 'ORD-2026-0083', customer: 'Virunga Traders', goods: 'Solar panels, 2 pallets', dest: 'Goma', eta: 'AUG 22', status: 'In transit', usd: 7600 },
+      { no: 'ORD-2026-0079', customer: 'B. Mugisha', goods: 'Electronics, 3 pallets', dest: 'Bukavu', eta: 'AUG 11', status: 'In transit', usd: 28900 },
+      { no: 'ORD-2026-0071', customer: 'C. Niyonzima', goods: 'Toyota Hiace 2019', dest: 'Kigali', eta: 'AUG 04', status: 'Arrived', usd: 1980 },
+      { no: 'ORD-2026-0064', customer: 'Rwanda Agri Ltd', goods: 'Irrigation pumps ×6', dest: 'Kigali', eta: 'JUL 12', status: 'Delivered', usd: 0 }
+    ];
+    const filter = this.state.statusFilter;
+    const shown = allOrders.filter(o => filter === 'All' || o.status === filter);
+    const myOrders = shown.map(o => ({ ...o, balance: o.usd ? '$' + o.usd.toLocaleString('en-US') : '—', pillBg: pill[o.status][0], pillFg: pill[o.status][1] }));
+    const statusChips = ['All', 'Draft', 'Submitted', 'In transit', 'Arrived', 'Delivered'].map(s => ({
+      label: s,
+      bg: s === filter ? '#2875B4' : '#fff', fg: s === filter ? '#fff' : '#6B7178', border: s === filter ? '#2875B4' : '#D5DADE',
+      pick: () => this.setState({ statusFilter: s })
+    }));
+    const goodsCats = ['Vehicle', 'Machinery', 'Electronics', 'General'].map(g => ({
+      label: g, bg: g === this.state.goodsCat ? '#2875B4' : '#fff', fg: g === this.state.goodsCat ? '#fff' : '#6B7178',
+      pick: () => this.setState({ goodsCat: g })
+    }));
+    const detailFields = [
+      { k: 'Customer', v: 'Nshuti Motors' }, { k: 'Category', v: 'Vehicle' },
+      { k: 'Make / model', v: 'Toyota Land Cruiser' }, { k: 'Year / colour', v: '2016 · Silver' },
+      { k: 'VIN', v: 'JTEBH9FJ8GK224417' }, { k: 'Engine no', v: '1GR-5567201' },
+      { k: 'Origin port', v: 'Guangzhou' }, { k: 'Destination', v: 'Kigali' },
+      { k: 'Departure', v: '2026-08-02' }, { k: 'ETA', v: '2026-09-18' },
+      { k: 'Container', v: 'MSKU 442819' }, { k: 'Bill of lading', v: 'COSU 88120451' }
+    ];
+    const history = [
+      { at: '28 JUL 14:02', what: 'draft → submitted', by: 'A. Uwase' },
+      { at: '24 JUL 09:15', what: 'Order created (draft)', by: 'A. Uwase' }
+    ];
+    // --- POS ---
+    const items = [
+      { sku: 'CEM-050', name: 'Cement 50kg — Cimerwa', price: 12500, unit: 'bag', stock: 184 },
+      { sku: 'IRS-28G', name: 'Iron sheet 28G ×3m', price: 8900, unit: 'piece', stock: 312 },
+      { sku: 'NLS-5KG', name: 'Nails assorted 5kg', price: 6200, unit: 'bag', stock: 47 },
+      { sku: 'PNT-20L', name: 'Paint, white matt 20L', price: 68000, unit: 'box', stock: 12 },
+      { sku: 'PVC-110', name: 'PVC pipe 110mm ×6m', price: 9800, unit: 'piece', stock: 96 },
+      { sku: 'BWR-25K', name: 'Binding wire 25kg', price: 32000, unit: 'bag', stock: 8 },
+      { sku: 'PDL-060', name: 'Padlock heavy 60mm', price: 4500, unit: 'piece', stock: 0 },
+      { sku: 'WBR-STD', name: 'Wheelbarrow, standard', price: 38500, unit: 'piece', stock: 21 }
+    ];
+    const rwf = n => 'RWF ' + n.toLocaleString('en-US');
+    const cart = this.state.cart;
+    const posItems = items.map(it => ({
+      ...it,
+      price: rwf(it.price).replace('RWF ', ''),
+      stock: it.stock === 0 ? 'OUT' : it.stock + ' in stock',
+      stockFg: it.stock === 0 ? '#C2410C' : it.stock < 10 ? '#B45309' : '#8A9098',
+      border: cart[it.sku] ? '#2875B4' : '#E4E7EA',
+      add: () => { if (it.stock === 0) return; this.setState(s => ({ cart: { ...s.cart, [it.sku]: (s.cart[it.sku] || 0) + 1 } })); }
+    }));
+    const cartRows = Object.entries(cart).filter(([, q]) => q > 0).map(([sku, qty]) => {
+      const it = items.find(i => i.sku === sku);
+      return {
+        name: it.name, qty, price: it.price.toLocaleString('en-US'), total: rwf(it.price * qty).replace('RWF ', 'RWF\u00A0'),
+        inc: () => this.setState(s => ({ cart: { ...s.cart, [sku]: s.cart[sku] + 1 } })),
+        dec: () => this.setState(s => ({ cart: { ...s.cart, [sku]: Math.max(0, s.cart[sku] - 1) } }))
+      };
+    });
+    const sub = Object.entries(cart).reduce((t, [sku, q]) => t + (items.find(i => i.sku === sku).price * q), 0);
+    const payMethods = ['Cash', 'MoMo', 'Bank', 'Card'].map(m => ({
+      label: m,
+      bg: m === this.state.payMethod ? '#1A1A1A' : '#fff', fg: m === this.state.payMethod ? '#fff' : '#6B7178',
+      border: m === this.state.payMethod ? '#1A1A1A' : '#D5DADE',
+      pick: () => this.setState({ payMethod: m })
+    }));
+    // --- admin ---
+    const as = this.state.adminScreen;
+    const navItem = n => ({
+      label: n.label, hint: n.hint || '',
+      hintFg: n.hint ? '#fff' : 'transparent',
+      hintBg: n.hint === '6' ? '#C2410C' : n.hint ? '#2875B4' : 'transparent',
+      fg: n.key === as ? '#fff' : 'rgba(255,255,255,.72)',
+      bg: n.key === as ? 'rgba(255,255,255,.09)' : 'transparent',
+      bar: n.key === as ? '#7AB648' : 'transparent',
+      go: n.key ? () => this.setState({ adminScreen: n.key }) : () => {}
+    });
+    const adminGroups = [
+      { title: 'OVERVIEW', items: [{ label: 'Dashboard' }] },
+      { title: 'FREIGHT', items: [{ label: 'All orders', hint: '7' }, { label: 'Bulk status update' }, { label: 'Customers' }] },
+      { title: 'SHOP', items: [{ label: 'Items', key: 'items' }, { label: 'Purchases' }, { label: 'Stock movements' }, { label: 'Low stock', hint: '6' }, { label: 'Adjustments' }] },
+      { title: 'ADMIN', items: [{ label: 'Reports', key: 'reports' }, { label: 'Users', key: 'users' }, { label: 'Audit log', key: 'audit' }] }
+    ].map(g => ({ title: g.title, items: g.items.map(navItem) }));
+    const itemRows = [
+      { sku: 'CEM-050', name: 'Cement 50kg — Cimerwa', cat: 'Cement & agg.', unit: 'bag', cost: 10800, sell: 12500, stock: 184, reorder: 60 },
+      { sku: 'IRS-28G', name: 'Iron sheet 28G ×3m', cat: 'Steel', unit: 'piece', cost: 7400, sell: 8900, stock: 312, reorder: 80 },
+      { sku: 'NLS-5KG', name: 'Nails assorted 5kg', cat: 'Fasteners', unit: 'bag', cost: 4900, sell: 6200, stock: 47, reorder: 30 },
+      { sku: 'PNT-20L', name: 'Paint, white matt 20L', cat: 'Paint', unit: 'box', cost: 54000, sell: 68000, stock: 12, reorder: 15 },
+      { sku: 'PVC-110', name: 'PVC pipe 110mm ×6m', cat: 'Plumbing', unit: 'piece', cost: 7900, sell: 9800, stock: 96, reorder: 40 },
+      { sku: 'BWR-25K', name: 'Binding wire 25kg', cat: 'Steel', unit: 'bag', cost: 26500, sell: 32000, stock: 8, reorder: 10 },
+      { sku: 'PDL-060', name: 'Padlock heavy 60mm', cat: 'Tools', unit: 'piece', cost: 3200, sell: 4500, stock: 0, reorder: 20 },
+      { sku: 'WBR-STD', name: 'Wheelbarrow, standard', cat: 'Tools', unit: 'piece', cost: 31000, sell: 38500, stock: 21, reorder: 8 }
+    ].map(i => ({
+      ...i,
+      cost: i.cost.toLocaleString('en-US'), sell: i.sell.toLocaleString('en-US'),
+      stock: String(i.stock), reorder: String(i.reorder),
+      stockFg: Number(i.stock) === 0 ? '#C2410C' : Number(i.stock) <= i.reorder ? '#B45309' : '#1A1A1A'
+    }));
+    const reportGroups = [
+      { title: 'Freight', rows: [
+        { name: 'Orders per month', desc: 'count and value' },
+        { name: 'Outstanding balances', desc: 'by customer' },
+        { name: 'Orders per staff member', desc: 'volume and value' },
+        { name: 'Average transit time', desc: 'departure → arrival, by destination' },
+        { name: 'Top customers', desc: 'by order value' }
+      ]},
+      { title: 'Shop', rows: [
+        { name: 'Daily & monthly sales', desc: 'revenue and count' },
+        { name: 'Profit per item', desc: '(price − cost at sale) × qty' },
+        { name: 'Stock on hand & value', desc: 'from the movements ledger' },
+        { name: 'Slow movers', desc: 'no sale in 60 days' },
+        { name: 'Under-price sales', desc: 'sold below sell price' }
+      ]},
+      { title: 'Combined', rows: [
+        { name: 'Monthly summary', desc: 'revenue per module, cash in, receivables' },
+        { name: 'Sales per staff member', desc: 'both modules' },
+        { name: 'Exchange rate impact', desc: 'converted at rate per payment' }
+      ]}
+    ];
+    const roleStyle = { Manager: ['rgba(40,117,180,.12)', '#2875B4'], 'Freight staff': ['rgba(122,182,72,.18)', '#4C7A24'], 'Shop staff': ['#EEF0F2', '#6B7178'] };
+    const userRows = [
+      { name: 'J. Karangwa', email: 'jmk@ihame.rw', role: 'Manager', active: true, last: 'now', avatarBg: '#2875B4' },
+      { name: 'A. Uwase', email: 'a.uwase@ihame.rw', role: 'Freight staff', active: true, last: '14:02', avatarBg: '#7AB648' },
+      { name: 'E. Habimana', email: 'e.habimana@ihame.rw', role: 'Freight staff', active: true, last: '11:38', avatarBg: '#7AB648' },
+      { name: 'C. Nkurunziza', email: 'c.nkz@ihame.rw', role: 'Shop staff', active: true, last: '14:20', avatarBg: '#6B7178' },
+      { name: 'D. Mukamana', email: 'd.muka@ihame.rw', role: 'Shop staff', active: true, last: 'yesterday', avatarBg: '#6B7178' },
+      { name: 'P. Ndayambaje', email: 'p.nda@ihame.rw', role: 'Freight staff', active: false, last: '12 May', avatarBg: '#B4BAC0' }
+    ].map(u => ({
+      ...u,
+      initials: u.name.split(' ').map(w => w[0]).join('').replace('.', '').slice(0, 2).toUpperCase(),
+      roleBg: roleStyle[u.role][0], roleFg: roleStyle[u.role][1],
+      dot: u.active ? '#7AB648' : '#C3C9CE', status: u.active ? 'Active' : 'Deactivated',
+      toggleLabel: u.active ? 'Deactivate' : 'Reactivate', toggleFg: u.active ? '#C2410C' : '#4C7A24'
+    }));
+    const auditRows = [
+      { at: '01 AUG 13:47', by: 'J. Karangwa', record: 'orders · ORD-0087', field: 'eta', old: '2026-09-12', new: '2026-09-18' },
+      { at: '01 AUG 13:46', by: 'J. Karangwa', record: 'orders · ORD-0087', field: 'container_no', old: '—', new: 'MSKU 442819' },
+      { at: '01 AUG 11:02', by: 'J. Karangwa', record: 'sales · SAL-1038', field: 'is_voided', old: 'false', new: 'true' },
+      { at: '01 AUG 11:02', by: 'system', record: 'stock_movements', field: 'return ×2 · PVC-110', old: '—', new: '+2.00' },
+      { at: '31 JUL 16:31', by: 'J. Karangwa', record: 'items · PNT-20L', field: 'sell_price', old: '64,000', new: '68,000' },
+      { at: '31 JUL 09:15', by: 'J. Karangwa', record: 'stock_movements', field: 'adjustment · NLS-5KG', old: '—', new: '−3.00 · “torn bags”' },
+      { at: '30 JUL 15:22', by: 'J. Karangwa', record: 'orders · ORD-0079', field: 'status', old: 'submitted', new: 'in_transit' },
+      { at: '30 JUL 15:20', by: 'J. Karangwa', record: 'users · p.nda', field: 'is_active', old: 'true', new: 'false' }
+    ];
+    const myOrdersMobile = allOrders.slice(0, 6).map(o => ({ ...o, balance: o.usd ? '$' + o.usd.toLocaleString('en-US') : '—', pillBg: pill[o.status][0], pillFg: pill[o.status][1] }));
+    const stockLookupRows = items.map(it => ({
+      name: it.name, sku: it.sku, unit: it.unit,
+      price: 'RWF ' + it.price.toLocaleString('en-US'),
+      stock: String(it.stock),
+      stockFg: it.stock === 0 ? '#C2410C' : it.stock < 10 ? '#B45309' : '#1A1A1A'
+    }));
+    return {
+      adminGroups, itemRows, reportGroups, userRows, auditRows, myOrdersMobile, stockLookupRows,
+      showItems: as === 'items', showReports: as === 'reports', showUsers: as === 'users', showAudit: as === 'audit',
+      staffTabs, myOrders, statusChips, goodsCats, detailFields, history,
+      showMyOrders: ss === 'orders', showNewOrder: ss === 'new', showDetail: ss === 'detail',
+      goMyOrders: () => this.setState({ staffScreen: 'orders' }),
+      goNewOrder: () => this.setState({ staffScreen: 'new' }),
+      goDetail: () => this.setState({ staffScreen: 'detail' }),
+      isVehicle: this.state.goodsCat === 'Vehicle',
+      goodsDesc: this.state.goodsCat === 'Vehicle' ? 'Toyota Hiace, used, white, right-hand drive' : 'Describe the goods, quantity and packaging',
+      orderCount: 'Showing ' + shown.length + ' of ' + allOrders.length + ' orders',
+      posItems, cartRows, cartEmpty: cartRows.length === 0,
+      subtotal: rwf(sub), total: rwf(sub), payMethods,
+      needsProof: this.state.payMethod !== 'Cash',
+      showLogin: this.state.screen === 'login',
+      showDash: this.state.screen === 'dashboard',
+      signIn: () => this.setState({ screen: 'dashboard' }),
+      signOut: () => this.setState({ screen: 'login' }),
+      reviewRows, arrivals, bars, currencies,
+      outstanding: money(184250),
+      shopToday: cur === 'RWF' ? 'RWF 486,900' : money(374),
+      selectedLabel: count + ' selected'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+/* This app is light-only — without this, some mobile browsers (notably
+   Android Chrome's "Auto Dark Theme") apply their own automatic dark-mode
+   color adjustments to unstyled/native elements, which washes text out to
+   a muddy gray instead of solid black. */
+:root {
+  color-scheme: light;
+}
+
+/*
+ * Design tokens — IHAME Group UI & Functional Spec v1.1 §9.
+ * Keep these in sync with the spec if it changes; component code should
+ * reference these tokens (or literal spec px values via arbitrary Tailwind
+ * classes) rather than inventing new colors/radii.
+ */
+@theme inline {
+  --font-sans: var(--font-ibm-plex-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+
+  /* Brand */
+  --color-brand: #2875b4;
+  --color-brand-hover: #1f5f94;
+  --color-accent: #7ab648;
+  --color-dark: #1a1a1a;
+
+  /* Signal */
+  --color-alert: #c2410c;
+  --color-warn: #b45309;
+  --color-success: #4c7a24;
+  --color-delivered: #3d6b1f;
+
+  /* Surfaces */
+  --color-app: #f7f8f9;
+  --color-card: #ffffff;
+  --color-row-hover: #fafbfc;
+
+  /* Lines */
+  --color-border: #e4e7ea;
+  --color-hairline: #f2f4f5;
+  --color-hairline-2: #edeff1;
+  --color-input-border: #d5dade;
+
+  /* Text */
+  --color-ink: #1a1a1a;
+  --color-ink-secondary: #4a5057;
+  --color-ink-muted: #6b7178;
+  /* Darkened from the original #8a9098 (3.2:1 on white — fails WCAG AA's
+     4.5:1 for text this small) to #70747b (4.7:1), found via binary search
+     down the same hue rather than swapping to an unrelated gray. Audit
+     finding: this token is used as real text in 15+ files, so the fix
+     belongs here once, not per call site. */
+  --color-ink-faint: #70747b;
+  /* Intentionally left low-contrast — reserved for genuinely disabled
+     controls, where WCAG's own contrast requirement doesn't apply. Do not
+     use it for readable informational text; use ink-faint or ink-muted. */
+  --color-ink-disabled: #b4bac0;
+
+  /* Warning / low-stock banner. Was hardcoded as literal hex in 7+ files
+     before this token existed. */
+  --color-warning-bg: #fef6ed;
+  --color-warning-bg-hover: #fbebd8;
+  --color-warning-border: #f0d9be;
+  --color-warning-text: #7a4a21;
+
+  /* Skeleton loading shimmer. Two close, low-contrast grays already in the
+     palette (border / hairline) rather than new colors — a loading state
+     that's louder than the content it's standing in for reads as gaudy on
+     a functional operations tool. No dark-mode pair needed: the app is
+     light-only (see the color-scheme note above). */
+  --color-skeleton: #e4e7ea;
+  --color-skeleton-highlight: #f2f4f5;
+
+  /* Radius */
+  --radius-checkbox: 3px;
+  --radius-input: 4px;
+  --radius-card: 5px;
+  --radius-card-lg: 6px;
+  --radius-phone: 26px;
+}
+
+body {
+  background: var(--color-app);
+  color: var(--color-ink);
+  /* Standard practice with custom web fonts: without this, bold/semibold
+     custom-font text (e.g. headings) can render with uneven, heavier
+     stroke weight on WebKit/mobile — reads as a smudged gray-and-black
+     blend rather than a clean solid black. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Spec §6.1/§6.10: 1.5px brand border + a soft ring on focus, used on
+   inputs across the app. */
+.focus-ring-brand:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  border-width: 1.5px;
+  box-shadow: 0 0 0 3px rgba(40, 117, 180, 0.12);
+}
+
+/* For a wrapper div around an input (e.g. a password field's show/hide
+   button, or a search box's icon) rather than the input itself. Written as
+   its own real selector, not `focus-within:focus-ring-brand` — Tailwind
+   can't generate a variant-prefixed rule for a class it doesn't own as a
+   utility, so that combination silently produces no CSS at all. Verified
+   live: the password field wrapper had been shipping with this exact
+   no-op for as long as the pattern existed, well before this audit. */
+.focus-ring-brand-within:focus-within {
+  border-color: var(--color-brand);
+  border-width: 1.5px;
+  box-shadow: 0 0 0 3px rgba(40, 117, 180, 0.12);
+}
+
+/* Every button/link in the app was falling back to the browser's default
+   focus ring (functional, but visually inconsistent with the brand ring
+   above). `:focus-visible` rather than `:focus` so a mouse click doesn't
+   show it — only keyboard focus does. Outline (not box-shadow) so it reads
+   the same on every surface color, including the dark sidebar; 3.6:1
+   against --color-dark and 4.9:1 against white, both clear the 3:1 minimum
+   WCAG sets for non-text/focus-indicator contrast. */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Skeleton loading: a highlight band sweeping across a flat base color,
+   not a uniform opacity pulse — reads as "actively fetching" rather than
+   "gently breathing," and (unlike a spinner) has real width/height, so
+   nothing reflows when the real content swaps in. `background-size: 200%`
+   + animating `background-position` is what makes the gradient travel;
+   without both, it just sits static. */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.shimmer {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-skeleton) 25%,
+    var(--color-skeleton-highlight) 50%,
+    var(--color-skeleton) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background-image: none;
+    background-color: var(--color-skeleton);
+  }
+}

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" width="1200" height="1600" role="presentation">
+  <!--
+    Placeholder artwork for the login panel (Phase 0 decision: no real depot
+    photo yet). Composition is a China -> Kigali corridor abstraction over a
+    container-yard skyline, cropped with background-size:cover, so it holds up
+    both as a tall 600px desktop column and as a short 390x252 phone strip.
+    To swap in a real photograph later, replace the file this points at in
+    src/app/(auth)/login/page.tsx — nothing else needs to change.
+  -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#12181f" />
+      <stop offset="0.55" stop-color="#161b21" />
+      <stop offset="1" stop-color="#1a1a1a" />
+    </linearGradient>
+
+    <radialGradient id="glowBrand" cx="0.72" cy="0.2" r="0.62">
+      <stop offset="0" stop-color="#2875b4" stop-opacity="0.42" />
+      <stop offset="0.55" stop-color="#2875b4" stop-opacity="0.1" />
+      <stop offset="1" stop-color="#2875b4" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="glowAccent" cx="0.16" cy="0.82" r="0.55">
+      <stop offset="0" stop-color="#7ab648" stop-opacity="0.26" />
+      <stop offset="1" stop-color="#7ab648" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="fadeDown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="1.6" cy="1.6" r="1.6" fill="#ffffff" fill-opacity="0.05" />
+    </pattern>
+
+    <mask id="dotMask">
+      <rect width="1200" height="1600" fill="url(#fadeDown)" />
+    </mask>
+
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1600" fill="url(#sky)" />
+  <rect width="1200" height="1600" fill="url(#dots)" mask="url(#dotMask)" />
+  <rect width="1200" height="1600" fill="url(#glowBrand)" />
+  <rect width="1200" height="1600" fill="url(#glowAccent)" />
+
+  <!-- Shipping corridor: China -> Kigali, with the two DRC legs branching off. -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M -60 300 C 260 160, 520 470, 760 380 S 1140 250, 1300 330"
+          stroke="#ffffff" stroke-opacity="0.13" stroke-width="2" />
+    <path d="M -60 300 C 260 160, 520 470, 760 380 S 1140 250, 1300 330"
+          stroke="#7ab648" stroke-opacity="0.5" stroke-width="2"
+          stroke-dasharray="10 16" />
+
+    <path d="M -60 640 C 240 560, 430 800, 720 700 S 1120 600, 1300 680"
+          stroke="#ffffff" stroke-opacity="0.09" stroke-width="1.5"
+          stroke-dasharray="6 14" />
+    <path d="M 760 380 C 700 520, 620 560, 520 640"
+          stroke="#2875b4" stroke-opacity="0.55" stroke-width="1.5"
+          stroke-dasharray="6 12" />
+    <path d="M 760 380 C 820 520, 900 590, 1010 640"
+          stroke="#2875b4" stroke-opacity="0.35" stroke-width="1.5"
+          stroke-dasharray="6 12" />
+  </g>
+
+  <!-- Corridor nodes: origin, hub, and the two onward destinations. -->
+  <g>
+    <circle cx="760" cy="380" r="26" fill="#7ab648" fill-opacity="0.12" />
+    <circle cx="760" cy="380" r="11" fill="#7ab648" fill-opacity="0.28" />
+    <circle cx="760" cy="380" r="4.5" fill="#7ab648" />
+
+    <circle cx="-20" cy="300" r="4" fill="#ffffff" fill-opacity="0.5" />
+    <circle cx="520" cy="640" r="4" fill="#2875b4" />
+    <circle cx="520" cy="640" r="10" fill="#2875b4" fill-opacity="0.22" />
+    <circle cx="1010" cy="640" r="4" fill="#2875b4" />
+    <circle cx="1010" cy="640" r="10" fill="#2875b4" fill-opacity="0.22" />
+  </g>
+
+  <!-- Gantry crane silhouette over the yard. -->
+  <g stroke="#ffffff" stroke-opacity="0.14" stroke-width="4" fill="none">
+    <path d="M 150 1180 L 150 900 L 700 900" />
+    <path d="M 150 900 L 60 1010" />
+    <path d="M 700 900 L 700 985" />
+    <path d="M 300 1180 L 300 940" stroke-opacity="0.09" />
+  </g>
+
+  <!-- Container yard: stacked blocks reading as a skyline along the base. -->
+  <g>
+    <rect x="0" y="1180" width="1200" height="420" fill="#0f1216" fill-opacity="0.55" />
+
+    <g fill-opacity="0.5">
+      <rect x="40" y="1220" width="230" height="52" rx="3" fill="#2f3a45" />
+      <rect x="40" y="1276" width="230" height="52" rx="3" fill="#26313b" />
+      <rect x="290" y="1246" width="180" height="52" rx="3" fill="#2875b4" fill-opacity="0.34" />
+      <rect x="290" y="1302" width="180" height="52" rx="3" fill="#2f3a45" />
+      <rect x="500" y="1206" width="250" height="52" rx="3" fill="#26313b" />
+      <rect x="500" y="1262" width="250" height="52" rx="3" fill="#7ab648" fill-opacity="0.24" />
+      <rect x="500" y="1318" width="250" height="52" rx="3" fill="#2f3a45" />
+      <rect x="780" y="1252" width="200" height="52" rx="3" fill="#2f3a45" />
+      <rect x="780" y="1308" width="200" height="52" rx="3" fill="#26313b" />
+      <rect x="1000" y="1228" width="190" height="52" rx="3" fill="#26313b" />
+      <rect x="1000" y="1284" width="190" height="52" rx="3" fill="#2875b4" fill-opacity="0.24" />
+      <rect x="1000" y="1340" width="190" height="52" rx="3" fill="#2f3a45" />
+      <rect x="120" y="1384" width="300" height="52" rx="3" fill="#26313b" />
+      <rect x="440" y="1384" width="240" height="52" rx="3" fill="#2f3a45" />
+      <rect x="700" y="1384" width="280" height="52" rx="3" fill="#26313b" />
+    </g>
+
+    <!-- Corrugation: vertical hairlines across the stacks. -->
+    <g stroke="#000000" stroke-opacity="0.16" stroke-width="1">
+      <path d="M70 1220v216 M100 1220v216 M130 1220v216 M160 1220v216 M190 1220v216 M220 1220v216 M250 1220v216
+               M320 1246v108 M350 1246v108 M380 1246v108 M410 1246v108 M440 1246v108
+               M530 1206v230 M560 1206v230 M590 1206v230 M620 1206v230 M650 1206v230 M680 1206v230 M710 1206v230
+               M810 1252v184 M840 1252v184 M870 1252v184 M900 1252v184 M930 1252v184 M960 1252v184
+               M1030 1228v208 M1060 1228v208 M1090 1228v208 M1120 1228v208 M1150 1228v208" />
+    </g>
+
+    <rect x="0" y="1180" width="1200" height="1" fill="#ffffff" fill-opacity="0.08" />
+  </g>
+
+  <!-- Photographic grain so the panel doesn't read as flat vector fill. -->
+  <rect width="1200" height="1600" filter="url(#grain)" opacity="0.05" />
+</svg>

@@ -1,0 +1,521 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Phase 1: auth, users, roles, customers, audit log ─────────────────────
+// §2/§4/§11 of the spec. Freight/shop-specific models (orders, items, sales,
+// stock movements, etc.) are added in their own phases.
+
+enum Role {
+  manager
+  freight_staff
+  shop_staff
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  name               String
+  email              String   @unique
+  passwordHash       String   @map("password_hash")
+  role               Role
+  isActive           Boolean  @default(true) @map("is_active")
+  // Spec §11: forced reset on first login and after an admin reset.
+  mustChangePassword Boolean  @default(true) @map("must_change_password")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  sessions              Session[]
+  passwordResetTokens   PasswordResetToken[]
+  authEvents            AuthEvent[]
+  customersCreated      Customer[]           @relation("CustomerCreatedBy")
+  auditLogEntries       AuditLog[]           @relation("AuditChangedBy")
+  itemsCreated          Item[]               @relation("ItemCreatedBy")
+  stockMovements        StockMovement[]      @relation("StockMovementCreatedBy")
+  purchasesCreated      Purchase[]           @relation("PurchaseCreatedBy")
+  salesSold             Sale[]               @relation("SaleSoldBy")
+  salesVoided           Sale[]               @relation("SaleVoidedBy")
+  ordersCreated         Order[]              @relation("OrderCreatedBy")
+  orderPaymentsRecorded OrderPayment[]       @relation("OrderPaymentRecordedBy")
+  orderStatusChanges    OrderStatusHistory[] @relation("OrderStatusChangedBy")
+
+  @@map("users")
+}
+
+// Server-side session store (not a stateless JWT) so deactivation/reset can
+// revoke all active sessions immediately, per spec §11.
+model Session {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+  // Idle timeout: 30 min since last_active_at. Absolute timeout: 12h since createdAt.
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+  expiresAt    DateTime @map("expires_at")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// Single-use, 1h-expiry reset tokens per spec §11. Store only a hash of the
+// token, never the raw value.
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// Auth events (login/logout/failure/reset/deactivation), kept separate from
+// the business audit_log per spec §11. Also backs the login rate-limit
+// lookup (5 failures / 15 min lockout, by IP or username).
+enum AuthEventType {
+  login_success
+  login_failure
+  logout
+  password_reset_requested
+  password_reset_completed
+  account_deactivated
+  account_reactivated
+  account_locked
+}
+
+model AuthEvent {
+  id        String        @id @default(uuid())
+  eventType AuthEventType @map("event_type")
+  userId    String?       @map("user_id")
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // Populated even when no user could be resolved (e.g. unknown email on a failed login).
+  email     String?
+  ipAddress String?       @map("ip_address")
+  userAgent String?       @map("user_agent")
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@index([email, createdAt])
+  @@index([ipAddress, createdAt])
+  @@index([userId, createdAt])
+  @@map("auth_events")
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  phone       String?
+  email       String?
+  idNumber    String?  @map("id_number")
+  address     String?
+  notes       String?
+  createdById String   @map("created_by")
+  createdBy   User     @relation("CustomerCreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  orders Order[]
+
+  @@map("customers")
+}
+
+// Append-only business audit trail (§4/§11). UPDATE/DELETE are revoked for
+// the app's runtime DB role in Supabase directly — see prisma/README or the
+// deployment notes for the grant/revoke statements.
+model AuditLog {
+  id          String   @id @default(uuid())
+  tableName   String   @map("table_name")
+  recordId    String   @map("record_id")
+  fieldName   String   @map("field_name")
+  oldValue    String?  @map("old_value")
+  newValue    String?  @map("new_value")
+  changedById String   @map("changed_by")
+  changedBy   User     @relation("AuditChangedBy", fields: [changedById], references: [id])
+  changedAt   DateTime @default(now()) @map("changed_at")
+
+  @@index([tableName, recordId])
+  @@index([changedById])
+  @@index([changedAt])
+  @@map("audit_log")
+}
+
+// ─── Phase 2: items, opening stock import, stock movements ledger ──────────
+// Spec §4 "Shop module". Sales/sale_items arrive in phase 3; the shapes here
+// are what phases 3+ will read from, so the ledger rules live at this layer.
+
+enum Unit {
+  piece
+  metre
+  kg
+  bag
+  litre
+  box
+}
+
+enum MovementType {
+  opening
+  purchase
+  sale
+  return
+  damage
+  adjustment
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  items Item[]
+
+  @@map("categories")
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  phone     String?
+  email     String?
+  address   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  purchases Purchase[]
+
+  @@map("suppliers")
+}
+
+model Item {
+  id           String   @id @default(uuid())
+  sku          String   @unique
+  barcode      String?  @unique
+  name         String
+  categoryId   String   @map("category_id")
+  category     Category @relation(fields: [categoryId], references: [id])
+  unit         Unit
+  // Current weighted average, recalculated on every purchase (spec §5.6) —
+  // never edited directly. Seeded once from the item's opening cost.
+  costPrice    Decimal  @default(0) @map("cost_price") @db.Decimal(12, 2)
+  sellPrice    Decimal  @map("sell_price") @db.Decimal(12, 2)
+  // Stock on hand is never stored — it is SUM(stock_movements.quantity).
+  // This is the threshold that turns the on-hand figure into a low-stock flag.
+  reorderLevel Decimal  @default(0) @map("reorder_level") @db.Decimal(12, 2)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdById  String   @map("created_by")
+  createdBy    User     @relation("ItemCreatedBy", fields: [createdById], references: [id])
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  stockMovements StockMovement[]
+  purchaseItems  PurchaseItem[]
+  saleItems      SaleItem[]
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@map("items")
+}
+
+// The ledger. Insert-only — never updated, never deleted (spec §4). Stock on
+// hand for an item is SUM(quantity) over these rows.
+model StockMovement {
+  id             String        @id @default(uuid())
+  itemId         String        @map("item_id")
+  item           Item          @relation(fields: [itemId], references: [id])
+  movementType   MovementType  @map("movement_type")
+  // Signed: positive in, negative out.
+  quantity       Decimal       @db.Decimal(12, 2)
+  // Inbound movements only (opening, purchase, return).
+  unitCost       Decimal?      @map("unit_cost") @db.Decimal(12, 2)
+  // Loose back-pointer to whatever caused the movement ("purchase", "sale");
+  // deliberately not a FK, since it spans several tables.
+  referenceType  String?       @map("reference_type")
+  referenceId    String?       @map("reference_id")
+  // Precise link back to the purchase line this movement came from (purchase
+  // movements only). referenceId alone isn't enough to edit a specific line —
+  // it's shared by every line in the same purchase, and breaks if a purchase
+  // buys the same item on two lines. Nullable: only purchase-type movements
+  // set it.
+  purchaseItemId String?       @unique @map("purchase_item_id")
+  purchaseItem   PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
+  // Required for `adjustment` and `damage` — enforced in the Server Action,
+  // since the type can't express a conditional NOT NULL.
+  note           String?
+  createdById    String        @map("created_by")
+  createdBy      User          @relation("StockMovementCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  @@index([itemId, createdAt])
+  @@index([movementType])
+  @@index([createdAt])
+  @@map("stock_movements")
+}
+
+model Purchase {
+  id          String   @id @default(uuid())
+  purchaseNo  String   @unique @map("purchase_no")
+  supplierId  String   @map("supplier_id")
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  purchasedAt DateTime @map("purchased_at")
+  total       Decimal  @db.Decimal(14, 2)
+  createdById String   @map("created_by")
+  createdBy   User     @relation("PurchaseCreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  lines PurchaseItem[]
+
+  @@index([supplierId])
+  @@index([purchasedAt])
+  @@map("purchases")
+}
+
+// Purchases are editable (manager only) — see src/app/purchases/actions.ts.
+// Editing never mutates history silently: each line stays linked 1:1 to the
+// stock_movements row it produced (via StockMovement.purchaseItemId), so an
+// edit updates both together and cost_price is always recomputed fresh from
+// the ledger afterward rather than carried forward.
+model PurchaseItem {
+  id         String   @id @default(uuid())
+  purchaseId String   @map("purchase_id")
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  itemId     String   @map("item_id")
+  item       Item     @relation(fields: [itemId], references: [id])
+  quantity   Decimal  @db.Decimal(12, 2)
+  unitCost   Decimal  @map("unit_cost") @db.Decimal(12, 2)
+
+  stockMovement StockMovement?
+
+  @@index([purchaseId])
+  @@index([itemId])
+  @@map("purchase_items")
+}
+
+// ─── Phase 3: sales, stock deduction ────────────────────────────────────────
+// Spec §4 "Shop module" cont'd. MovementType's `sale`/`return` values already
+// existed since phase 2 — this is where they start actually getting written.
+
+enum PaymentMethod {
+  cash
+  momo
+  bank
+  card
+}
+
+// A completed sale. Never edited afterward — corrected only by voiding
+// (spec's no-hard-deletes rule: set is_voided, never delete). total is always
+// recomputed server-side from the lines, never trusted from the client.
+model Sale {
+  id                 String        @id @default(uuid())
+  saleNo             String        @unique @map("sale_no")
+  // Phase 7: a UUID the POS generates client-side the moment "Complete sale"
+  // is tapped, before it's known whether the request will actually reach
+  // the server — cash sales carry it through the offline queue
+  // (src/lib/offline/sale-queue.ts), non-cash sales carry it straight
+  // through completeSaleAction. Either way, a retried submission of the same
+  // sale (queued-sale flush retrying after a lost response, or
+  // experimental.useOffline replaying a Server Action once the network
+  // returns) hits this column's unique constraint instead of creating a
+  // second sale; the caller reads the original back out and returns it as
+  // success. Null only for sales completed before this existed.
+  clientRequestId    String?       @unique @map("client_request_id")
+  paymentMethod      PaymentMethod @map("payment_method")
+  // Phase 7: replaces the earlier has_proof_of_payment boolean stub. The
+  // storage path of the uploaded image (private Supabase Storage bucket,
+  // content-validated, metadata stripped — src/lib/storage.ts), or null if
+  // none was attached. "Proof attached" is now just "this is non-null" —
+  // required for every payment method except cash, enforced in the action.
+  proofOfPaymentPath String?       @map("proof_of_payment_path")
+  total              Decimal       @db.Decimal(14, 2)
+  isVoided           Boolean       @default(false) @map("is_voided")
+  voidReason         String?       @map("void_reason")
+  voidedAt           DateTime?     @map("voided_at")
+  voidedById         String?       @map("voided_by")
+  voidedBy           User?         @relation("SaleVoidedBy", fields: [voidedById], references: [id])
+  soldById           String        @map("sold_by")
+  soldBy             User          @relation("SaleSoldBy", fields: [soldById], references: [id])
+  createdAt          DateTime      @default(now()) @map("created_at")
+
+  items SaleItem[]
+
+  @@index([soldById])
+  @@index([createdAt])
+  @@index([isVoided])
+  @@map("sales")
+}
+
+// unitPrice is the price actually charged, snapshotted at sale time — never a
+// live reference to items.sell_price, same reasoning as purchase_items'
+// unit_cost: the item's price can change later and this row has to keep
+// recording what was true at the moment of sale.
+model SaleItem {
+  id           String   @id @default(uuid())
+  saleId       String   @map("sale_id")
+  sale         Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  itemId       String   @map("item_id")
+  item         Item     @relation(fields: [itemId], references: [id])
+  quantity     Decimal  @db.Decimal(12, 2)
+  unitPrice    Decimal  @map("unit_price") @db.Decimal(12, 2)
+  // Set once at sale time by comparing unitPrice to the item's sell_price
+  // right then — not recomputed later against a since-changed sell_price.
+  isUnderPrice Boolean  @default(false) @map("is_under_price")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([saleId])
+  @@index([itemId])
+  @@map("sale_items")
+}
+
+// ─── Phase 4: freight order form, draft/submit lock, payments ──────────────
+// Spec §3/§4 "Order lifecycle" + "Freight module". Manager's full edit view,
+// status-change control, and cancel-with-reason arrive in phase 5 — this
+// phase only needs draft/submit and payments, from the creating staff
+// member's side, plus the ledger tables phase 5 will read/write into.
+
+enum GoodsCategory {
+  vehicle
+  machinery
+  electronics
+  general
+}
+
+enum Destination {
+  kigali
+  goma
+  bukavu
+}
+
+enum Currency {
+  USD
+  RWF
+  CDF
+}
+
+enum OrderStatus {
+  draft
+  submitted
+  in_transit
+  arrived
+  delivered
+  cancelled
+}
+
+// Balance is never stored (spec §4) — always total_amount − SUM(order_payments.amount),
+// computed at read time by src/lib/order-balance.ts.
+model Order {
+  id                String         @id @default(uuid())
+  orderNo           String         @unique @map("order_no")
+  customerId        String         @map("customer_id")
+  customer          Customer       @relation(fields: [customerId], references: [id])
+  // goodsCategory through totalAmount are nullable: spec §5 "save draft
+  // validates only the customer" means a brand-new draft can exist with
+  // nothing else filled in yet. submitOrderAction enforces all of them
+  // non-empty before status can move past draft — see actions.ts.
+  goodsCategory     GoodsCategory? @map("goods_category")
+  description       String?
+  // For vehicles this is how many vehicles the order covers, and there is one
+  // `order_vehicles` row per unit — the spec models make/model/VIN/engine_no
+  // inline on `orders`, which silently only works for quantity 1. A shipment
+  // of three cars needs three VINs (and vin is unique), so those columns
+  // moved to their own table.
+  quantity          Int            @default(1)
+  originPort        String?        @map("origin_port")
+  destination       Destination?
+  departureDate     DateTime?      @map("departure_date")
+  eta               DateTime?
+  actualArrivalDate DateTime?      @map("actual_arrival_date")
+  containerNo       String?        @map("container_no")
+  blNo              String?        @map("bl_no")
+  currency          Currency?
+  totalAmount       Decimal?       @map("total_amount") @db.Decimal(14, 2)
+  status            OrderStatus    @default(draft)
+  createdById       String         @map("created_by")
+  createdBy         User           @relation("OrderCreatedBy", fields: [createdById], references: [id])
+  submittedAt       DateTime?      @map("submitted_at")
+  cancelledReason   String?        @map("cancelled_reason")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+
+  payments      OrderPayment[]
+  statusHistory OrderStatusHistory[]
+  vehicles      OrderVehicle[]
+
+  @@index([createdById])
+  @@index([status])
+  @@index([customerId])
+  @@map("orders")
+}
+
+// One row per physical vehicle on a `goods_category = vehicle` order. Split
+// out of `orders` so an order shipping several cars can record a VIN for
+// each — `vin` stays globally unique (spec §5), which is only enforceable
+// per-vehicle, not per-order.
+model OrderVehicle {
+  id       String  @id @default(uuid())
+  orderId  String  @map("order_id")
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  // 1-based, so the form's "Vehicle 1 / Vehicle 2" blocks keep a stable order.
+  position Int
+  make     String?
+  model    String?
+  year     Int?
+  colour   String?
+  vin      String? @unique
+  engineNo String? @map("engine_no")
+
+  @@index([orderId])
+  @@map("order_vehicles")
+}
+
+// exchangeRate is stored per payment for later reporting (spec §7 combined
+// report converts at the rate stored per payment) but is not applied when
+// computing an order's balance — that sum is always the raw amounts, per
+// spec §4's literal formula.
+model OrderPayment {
+  id                 String        @id @default(uuid())
+  orderId            String        @map("order_id")
+  order              Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount             Decimal       @db.Decimal(14, 2)
+  currency           Currency
+  exchangeRate       Decimal       @map("exchange_rate") @db.Decimal(12, 6)
+  method             PaymentMethod
+  // Phase 7: see Sale.proofOfPaymentPath's comment — same replacement of the
+  // earlier boolean stub with a real, private, content-validated file path.
+  proofOfPaymentPath String?       @map("proof_of_payment_path")
+  paidOn             DateTime      @map("paid_on")
+  note               String?
+  recordedById       String        @map("recorded_by")
+  recordedBy         User          @relation("OrderPaymentRecordedBy", fields: [recordedById], references: [id])
+  createdAt          DateTime      @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@map("order_payments")
+}
+
+// Insert-only (spec §3: "every transition writes a row"). fromStatus is null
+// for the very first row a new order gets, if that's ever logged; in practice
+// phase 4 only ever writes one row per order, for draft -> submitted.
+model OrderStatusHistory {
+  id          String       @id @default(uuid())
+  orderId     String       @map("order_id")
+  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus  OrderStatus? @map("from_status")
+  toStatus    OrderStatus  @map("to_status")
+  note        String?
+  changedById String       @map("changed_by")
+  changedBy   User         @relation("OrderStatusChangedBy", fields: [changedById], references: [id])
+  changedAt   DateTime     @default(now()) @map("changed_at")
+
+  @@index([orderId])
+  @@map("order_status_history")
+}
