@@ -17,7 +17,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IHAME Logistics & Supply",
+  title: "IHAME LOGISTICS LTD",
   description: "Freight forwarding & hardware shop management system",
 };
 

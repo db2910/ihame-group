@@ -41,7 +41,7 @@ export default async function LoginPage() {
         <div className="relative px-6.5 pt-13 md:p-0">
           <Image
             src="/assets/ihame-logo.png"
-            alt="IHAME Logistics & Supply"
+            alt="IHAME LOGISTICS LTD"
             width={230}
             height={74}
             priority

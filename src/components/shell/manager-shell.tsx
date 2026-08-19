@@ -112,7 +112,7 @@ export function ManagerShell({
           getBoundingClientRect().top went to -600 after a 600px scroll).
           `sticky` pins it to the actual scrolling container regardless,
           without needing to fix that deeper layout question. */}
-      <div className="sticky top-0 z-30 flex h-14 flex-none items-center gap-3 border-b border-border bg-dark px-4 md:hidden">
+      <div className="sticky top-0 z-30 flex h-14 flex-none items-center gap-3 border-b border-border bg-nav px-4 md:hidden">
         <button
           onClick={() => setOpen(true)}
           aria-label="Open menu"
@@ -134,7 +134,7 @@ export function ManagerShell({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[216px] flex-none flex-col bg-dark py-5 text-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[216px] flex-none flex-col bg-nav py-5 text-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

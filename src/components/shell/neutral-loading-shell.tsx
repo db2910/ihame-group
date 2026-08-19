@@ -19,7 +19,7 @@ import Image from "next/image";
 export function NeutralLoadingShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col bg-app">
-      <div className="flex h-14 flex-none items-center gap-3 border-b border-border bg-dark px-4 md:px-6">
+      <div className="flex h-14 flex-none items-center gap-3 border-b border-border bg-nav px-4 md:px-6">
         <Image src="/assets/ihame-mark.png" alt="IHAME" width={30} height={14} className="h-auto w-[30px]" />
         <span className="font-sans text-[12px] font-semibold tracking-[0.1em] text-white/80">IHAME GROUP</span>
       </div>

@@ -23,6 +23,10 @@
   --color-brand-hover: #1f5f94;
   --color-accent: #7ab648;
   --color-dark: #1a1a1a;
+  /* Sampled directly from the approved brand banner (dashboard/sidebar/top-bar
+     chrome only — --color-dark above stays the app's separate near-black
+     "dark button/toast" color used everywhere else, unchanged). */
+  --color-nav: #1b506a;
 
   /* Signal */
   --color-alert: #c2410c;

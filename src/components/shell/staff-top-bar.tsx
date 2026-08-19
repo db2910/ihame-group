@@ -48,7 +48,7 @@ export function StaffTopBar({
           layout question. Left as static at `md`+ — desktop wasn't part of
           what was asked, and this shell's `<header>` is shared across every
           width unlike the manager shell's mobile-only strip. */}
-      <header className="sticky top-0 z-30 flex h-[58px] flex-none items-center gap-3 bg-dark px-4 text-white md:static md:gap-7 md:px-6">
+      <header className="sticky top-0 z-30 flex h-[58px] flex-none items-center gap-3 bg-nav px-4 text-white md:static md:gap-7 md:px-6">
         <div className="flex flex-none items-center gap-2.5">
           <Image src="/assets/ihame-mark.png" alt="IHAME" width={44} height={20} className="h-auto w-11" />
           <span className="hidden font-sans text-xs leading-none font-semibold tracking-[0.14em] sm:block">

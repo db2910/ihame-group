@@ -2,9 +2,15 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export const alt = "IHAME Logistics & Supply";
+export const alt = "IHAME LOGISTICS LTD";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// Background sampled directly (sharp, corner pixels, all four matched
+// exactly) from the approved brand banner — same value as globals.css's
+// --color-nav, kept as a literal here since this file runs in the OG image
+// route's isolated rendering environment, not the app's normal CSS.
+const BRAND_NAV = "#1b506a";
 
 // Without this, sharing a link falls back to whatever the platform's own
 // unfurler decides to show — in practice, this app's favicon, which was
@@ -21,28 +27,31 @@ export default async function Image() {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
           height: "100%",
-          background: "#2875b4",
+          background: BRAND_NAV,
         }}
       >
-        <img src={markSrc} width={520} height={232} alt="" />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginLeft: 56,
-            maxWidth: 480,
-          }}
-        >
-          <div style={{ fontSize: 52, fontWeight: 700, color: "#ffffff", lineHeight: 1.15 }}>
-            IHAME Logistics &amp; Supply
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img src={markSrc} width={480} height={214} alt="" />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: 48,
+              maxWidth: 480,
+            }}
+          >
+            <div style={{ fontSize: 46, fontWeight: 700, color: "#ffffff", lineHeight: 1.2 }}>
+              IHAME LOGISTICS LTD
+            </div>
           </div>
-          <div style={{ fontSize: 24, color: "rgba(255,255,255,0.75)", marginTop: 16 }}>
-            Freight forwarding &amp; hardware shop management
-          </div>
+        </div>
+        <div style={{ display: "flex", fontSize: 26, color: "rgba(255,255,255,0.8)", marginTop: 28 }}>
+          Your Trust, Our Mission
         </div>
       </div>
     ),
