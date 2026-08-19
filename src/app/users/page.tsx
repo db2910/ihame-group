@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { ManagerShellFrame } from "@/components/shell/manager-shell-frame";
 import { ContentHeader } from "@/components/shell/content-header";
 import { AddUserModal } from "./add-user-modal";
-import { ResetPasswordButton, ToggleActiveButton } from "./user-row-actions";
+import { EditNameButton, ResetPasswordButton, ToggleActiveButton } from "./user-row-actions";
 
 const ROLE_LABEL: Record<string, string> = {
   manager: "Manager",
@@ -100,10 +100,11 @@ export default async function UsersPage() {
               <div className="font-mono text-[12px] text-ink-faint md:text-[13.5px]">
                 {formatLastActive(lastLoginByUser.get(u.id))}
               </div>
-              {/* Stacked, not side-by-side — two action links sharing one
-                  1fr grid column never fit on a phone width at any font
+              {/* Stacked, not side-by-side — several action links sharing
+                  one 1fr grid column never fit on a phone width at any font
                   size; each gets the full column to itself this way. */}
               <div className="flex flex-col items-end gap-1 md:flex-row md:items-center md:justify-end md:gap-3.5">
+                <EditNameButton userId={u.id} name={u.name} />
                 <ResetPasswordButton userId={u.id} />
                 {u.id === manager.id ? (
                   <span className="font-sans text-[12px] text-ink-faint md:text-[13.5px]" title="You can't deactivate your own account">

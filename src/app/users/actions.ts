@@ -94,6 +94,52 @@ export async function resetPasswordAction(
   return { success: true, temporaryPassword };
 }
 
+export type RenameUserState = { error: string } | { success: true } | undefined;
+
+const renameUserSchema = z.object({
+  userId: z.string().trim().min(1),
+  name: z.string().trim().min(2, "Name must be at least 2 characters."),
+});
+
+// Covers the "this account is being handed to someone else" case (spec
+// doesn't have a separate transfer-ownership flow) — a departing staff
+// member's login gets renamed and handed off rather than deleted, so the
+// history they created (sales, orders, stock movements) keeps pointing at a
+// name that still makes sense instead of an ex-employee's. Email/role
+// changes and a profile photo are explicitly out of scope for now.
+export async function renameUserAction(
+  _prevState: RenameUserState,
+  formData: FormData,
+): Promise<RenameUserState> {
+  const manager = await requireRole(["manager"]);
+
+  const parsed = renameUserSchema.safeParse({
+    userId: formData.get("userId"),
+    name: formData.get("name"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+  }
+
+  const user = await db.user.findUnique({ where: { id: parsed.data.userId } });
+  if (!user) return { error: "User not found." };
+
+  if (user.name !== parsed.data.name) {
+    await db.user.update({ where: { id: user.id }, data: { name: parsed.data.name } });
+    await recordAuditChange({
+      tableName: "users",
+      recordId: user.id,
+      fieldName: "name",
+      oldValue: user.name,
+      newValue: parsed.data.name,
+      changedById: manager.id,
+    });
+  }
+
+  revalidatePath("/users");
+  return { success: true };
+}
+
 export async function toggleActiveAction(formData: FormData): Promise<void> {
   const manager = await requireRole(["manager"]);
   const userId = String(formData.get("userId") ?? "");
