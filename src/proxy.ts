@@ -56,7 +56,11 @@ export const config = {
   // response is a redirect (SecurityError), so redirecting sw.js to /login
   // for a logged-out visitor doesn't just look wrong, it silently breaks
   // registration outright — confirmed live (Phase 7 offline-queue testing).
+  // opengraph-image needs the same exclusion for the same class of reason:
+  // WhatsApp/Slack/X/etc.'s link-preview crawlers fetch it with no session
+  // cookie at all, so without this they'd get redirected to the login page's
+  // HTML instead of the actual share image — confirmed live the same way.
   matcher: [
-    "/((?!_next/|assets/|favicon.ico|sw.js|manifest.webmanifest|icon-192x192.png|icon-512x512.png).*)",
+    "/((?!_next/|assets/|favicon.ico|sw.js|manifest.webmanifest|icon-192x192.png|icon-512x512.png|opengraph-image).*)",
   ],
 };

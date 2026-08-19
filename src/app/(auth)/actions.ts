@@ -10,6 +10,15 @@ import { getCurrentUser, roleHome } from "@/lib/auth/dal";
 import { isLoginLockedOut, recordAuthEvent } from "@/lib/auth/rate-limit";
 
 const GENERIC_LOGIN_ERROR = "Invalid email or password.";
+// Deliberately distinct from GENERIC_LOGIN_ERROR: a real lockout and a
+// mistyped password used to show the identical message, which reads as a
+// mystery once someone's actually locked out — every attempt fails the same
+// way, correct password or not, until the window passes. That's confusing
+// enough on its own for a real user without also hiding *why* (this project
+// doesn't need the account-enumeration protection a stricter reading of
+// "don't reveal lockouts" buys — the cost to a legitimate admin, locked out
+// mid-demo with no explanation, was the real problem in practice).
+const LOCKOUT_ERROR = "Too many failed attempts. Please wait a few minutes and try again.";
 
 export type LoginState = { error?: string } | undefined;
 
@@ -43,7 +52,7 @@ export async function signInAction(
 
   if (await isLoginLockedOut({ email, ipAddress })) {
     await recordAuthEvent({ eventType: "account_locked", email, ipAddress, userAgent });
-    return { error: GENERIC_LOGIN_ERROR };
+    return { error: LOCKOUT_ERROR };
   }
 
   const user = await db.user.findUnique({ where: { email } });
