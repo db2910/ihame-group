@@ -8,6 +8,7 @@ import { STATUS_LABEL, STATUS_PILL } from "../format";
 import { RecordPaymentModal } from "./record-payment-modal";
 import { ManagerEditForm, type ManagerEditableOrder } from "./manager-edit-form";
 import { StatusControls } from "./status-controls";
+import { AddExpenseButton } from "../../expenses/expense-form-modal";
 
 export type OrderDetail = {
   id: string;
@@ -42,6 +43,29 @@ export type OrderDetail = {
     recordedBy: string;
   }[];
   statusHistory: { id: string; at: string; what: string; by: string }[];
+  // Manager-only, same reasoning as `editable` below — margin is sensitive
+  // business data, not something a freight staff member needs to see about
+  // their own order. Deliberately its own flag rather than reusing
+  // `canManage`: a cancelled order can still have real, already-incurred
+  // costs worth recording (a supplier deposit paid before the customer
+  // cancelled), so this stays available for any order status a manager can
+  // see, not just the narrower submitted/in-transit/etc. range `canManage`
+  // covers for field-editing.
+  canManageExpenses: boolean;
+  expenses: {
+    id: string;
+    categoryLabel: string;
+    amountDisplay: string;
+    paidOnDisplay: string;
+    hasReceipt: boolean;
+    note: string | null;
+    recordedBy: string;
+  }[];
+  // Revenue minus same-currency expenses — null until the order has both an
+  // agreed total and a currency. otherCurrencyNote flags expenses recorded in
+  // a different currency than the order's own, which are never blended into
+  // the headline figure (see src/app/orders/[id]/page.tsx's comment).
+  profit: { display: string; otherCurrencyNote: string | null } | null;
   // Manager-only (Phase 5 Round 4). `editable` carries the raw field values
   // ManagerEditForm needs to prefill — null whenever canManage is false, so
   // a staff viewer's payload never has to shape it.
@@ -315,6 +339,56 @@ export function OrderDetailView({
                     )}
                   </div>
                 </Card>
+
+                {order.canManageExpenses && (
+                  <Card className="flex flex-col">
+                    <CardTitle>Expenses</CardTitle>
+                    {order.profit && (
+                      <div className="mb-3 flex items-baseline justify-between rounded border border-hairline-2 bg-app px-3.5 py-2.5">
+                        <span className="font-sans text-[12.5px] text-ink-faint">Profit</span>
+                        <span className="font-mono text-[15px] font-semibold text-success">
+                          {order.profit.display}
+                        </span>
+                      </div>
+                    )}
+                    {order.profit?.otherCurrencyNote && (
+                      <div className="mb-3 font-sans text-[11px] leading-[1.5] text-ink-faint">
+                        {order.profit.otherCurrencyNote}
+                      </div>
+                    )}
+                    {order.expenses.length === 0 && (
+                      <div className="font-sans text-[12.5px] text-ink-faint">No expenses recorded yet.</div>
+                    )}
+                    {order.expenses.map((e) => (
+                      <div
+                        key={e.id}
+                        className="flex items-center justify-between gap-3 border-b border-hairline py-2.5 last:border-b-0"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="font-sans text-[13px] font-medium text-ink">
+                            {e.amountDisplay} · {e.categoryLabel}
+                          </div>
+                          <div className="mt-0.5 truncate font-sans text-[11.5px] text-ink-faint">
+                            {[e.note, e.paidOnDisplay, e.recordedBy].filter(Boolean).join(" · ")}
+                          </div>
+                        </div>
+                        {e.hasReceipt && (
+                          <a
+                            href={`/expenses/${e.id}/proof`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-none font-sans text-[11px] text-brand hover:underline"
+                          >
+                            Receipt
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                    <div className="mt-3.5">
+                      <AddExpenseButton orderId={order.id} orderLabel={order.orderNo} defaultCurrency={order.currency} />
+                    </div>
+                  </Card>
+                )}
               </div>
             </div>
           </>

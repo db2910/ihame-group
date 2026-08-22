@@ -47,6 +47,7 @@ model User {
   ordersCreated         Order[]              @relation("OrderCreatedBy")
   orderPaymentsRecorded OrderPayment[]       @relation("OrderPaymentRecordedBy")
   orderStatusChanges    OrderStatusHistory[] @relation("OrderStatusChangedBy")
+  expensesRecorded      Expense[]            @relation("ExpenseRecordedBy")
 
   @@map("users")
 }
@@ -449,6 +450,7 @@ model Order {
   payments      OrderPayment[]
   statusHistory OrderStatusHistory[]
   vehicles      OrderVehicle[]
+  expenses      Expense[]
 
   @@index([createdById])
   @@index([status])
@@ -518,4 +520,54 @@ model OrderStatusHistory {
 
   @@index([orderId])
   @@map("order_status_history")
+}
+
+// ─── Post-launch addition: freight expense tracking ────────────────────────
+// Not every dollar an order brings in is profit — some of it immediately owes
+// back out (supplier cost, transport, customs). Deliberately separate from
+// order_payments (money in) and never netted against an order's balance,
+// which stays exactly "what the customer still owes" regardless of what
+// IHAME later pays out — this model only feeds a separate profit figure
+// (revenue minus expenses), shown alongside the balance, never blended into
+// it. Freight-only: the shop module already has its own margin model via
+// items.cost_price.
+
+enum ExpenseCategory {
+  supplier_cost
+  transport
+  customs
+  other
+}
+
+model Expense {
+  id       String          @id @default(uuid())
+  // Optional by design (spec discussion, 22 Aug 2026): an expense can be
+  // pinned to the specific order it was incurred for, or left unlinked for a
+  // general business cost (fuel, office rent) with no single shipment behind
+  // it. onDelete: SetNull rather than Cascade or Restrict — if an order were
+  // ever removed, the money was still really spent; the expense survives as
+  // an unlinked one rather than disappearing or blocking the order's removal.
+  orderId  String?         @map("order_id")
+  order    Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  category ExpenseCategory
+  amount   Decimal         @db.Decimal(14, 2)
+  // Deliberately independent of the linked order's own currency — a supplier
+  // might be paid in USD while local transport is paid in RWF. Never
+  // converted or summed across currencies, same rule as everywhere else
+  // (order_payments.exchange_rate, reports): profit is computed and shown
+  // per currency, not blended.
+  currency Currency
+  note     String?
+  // Same private-bucket, content-validated, authenticated-route pattern as
+  // Sale/OrderPayment's proof_of_payment_path (src/lib/storage.ts) — a
+  // receipt photo, not a payment proof, but the same shape of problem.
+  proofOfPaymentPath String?  @map("proof_of_payment_path")
+  paidOn             DateTime @map("paid_on")
+  recordedById       String   @map("recorded_by")
+  recordedBy         User     @relation("ExpenseRecordedBy", fields: [recordedById], references: [id])
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([paidOn])
+  @@map("expenses")
 }

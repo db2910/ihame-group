@@ -45,6 +45,7 @@ function buildNavGroups(badges: ManagerNavBadges): NavGroup[] {
         },
         { key: "bulk-status", label: "Bulk status update", href: "/bulk-status" },
         { key: "customers", label: "Customers", href: "/customers" },
+        { key: "expenses", label: "Expenses", href: "/expenses" },
       ],
     },
     {

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth/dal";
 import { db } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
+import type { ExpenseCategory } from "@/generated/prisma/enums";
 import { StaffTopBar } from "@/components/shell/staff-top-bar";
 import { FREIGHT_STAFF_TABS } from "@/components/shell/staff-tabs";
 import { ManagerShellFrame } from "@/components/shell/manager-shell-frame";
@@ -50,6 +51,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       vehicles: { orderBy: { position: "asc" } },
       payments: { orderBy: { paidOn: "desc" }, include: { recordedBy: { select: { name: true } } } },
       statusHistory: { orderBy: { changedAt: "desc" }, include: { changedBy: { select: { name: true } } } },
+      expenses: { orderBy: { paidOn: "desc" }, include: { recordedBy: { select: { name: true } } } },
     },
   });
 
@@ -127,6 +129,37 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const paidPercent = total.greaterThan(0)
     ? Math.min(100, Math.max(0, Math.round((Number(paid) / Number(total)) * 100)))
     : 0;
+
+  // Revenue minus same-currency expenses only. An expense recorded in a
+  // different currency than the order (e.g. a USD car order with a local RWF
+  // transport cost) is never converted or blended into this figure — same
+  // rule as every other cross-currency total in this app (order balances,
+  // reports). Surfaced as a separate note instead of silently dropped.
+  const CATEGORY_LABEL: Record<ExpenseCategory, string> = {
+    supplier_cost: "Supplier cost",
+    transport: "Transport",
+    customs: "Customs",
+    other: "Other",
+  };
+  const sameCurrencyExpenseTotal = order.expenses
+    .filter((e) => e.currency === order.currency)
+    .reduce((sum, e) => sum.plus(e.amount), new Prisma.Decimal(0));
+  const otherCurrencyTotals = new Map<string, Prisma.Decimal>();
+  for (const e of order.expenses) {
+    if (e.currency === order.currency) continue;
+    otherCurrencyTotals.set(e.currency, (otherCurrencyTotals.get(e.currency) ?? new Prisma.Decimal(0)).plus(e.amount));
+  }
+  const profit: OrderDetail["profit"] = hasAmount
+    ? {
+        display: formatMoney(Number(total.minus(sameCurrencyExpenseTotal)), currency),
+        otherCurrencyNote:
+          otherCurrencyTotals.size > 0
+            ? `Not included above — ${[...otherCurrencyTotals.entries()]
+                .map(([c, amt]) => formatMoney(Number(amt), c))
+                .join(", ")} in other-currency expenses.`
+            : null,
+      }
+    : null;
 
   // authz.ts's editOrderAfterSubmit/changeOrderStatus: manager, and only
   // once the order has actually left draft (see the comment above).
@@ -253,6 +286,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     canManage,
     editable,
     editHistory,
+    canManageExpenses: isManager,
+    profit,
+    expenses: order.expenses.map((e) => ({
+      id: e.id,
+      categoryLabel: CATEGORY_LABEL[e.category],
+      amountDisplay: formatMoneyShort(Number(e.amount), e.currency),
+      paidOnDisplay: dateOnly.format(e.paidOn),
+      hasReceipt: e.proofOfPaymentPath !== null,
+      note: e.note,
+      recordedBy: e.recordedBy.name,
+    })),
     payments: order.payments.map((p) => ({
       id: p.id,
       amountDisplay: formatMoneyShort(Number(p.amount), p.currency),
